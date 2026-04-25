@@ -1,0 +1,120 @@
+// Prisma schema — Lyon Roller Hockey — MariaDB
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  nom          String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Article {
+  id          Int       @id @default(autoincrement())
+  titre       String
+  slug        String    @unique
+  contenu     String    @db.LongText
+  extrait     String?   @db.Text
+  imageUrl    String?
+  categorie   String?
+  statut      String    @default("draft") // draft | published
+  vues        Int       @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("articles")
+}
+
+model Equipe {
+  id          Int     @id @default(autoincrement())
+  nom         String
+  niveau      String
+  categorie   String
+  groupe      String  // senior | jeunes | loisir
+  couleur     String  @default("#0D2150")
+  horaire     String?
+  coach       String?
+  description String? @db.Text
+  actif       Boolean @default(true)
+  matchs      Match[]
+
+  @@map("equipes")
+}
+
+model Match {
+  id          Int       @id @default(autoincrement())
+  equipeId    Int?
+  equipe      Equipe?   @relation(fields: [equipeId], references: [id])
+  domicile    Boolean   @default(true)
+  adversaire  String
+  competition String
+  lieu        String?
+  date        DateTime
+  statut      String    @default("upcoming") // upcoming | result
+  scoreDom    Int?
+  scoreExt    Int?
+  resultat    String?   // win | loss | draw
+  createdAt   DateTime  @default(now())
+
+  @@map("matchs")
+}
+
+model Inscription {
+  id        Int      @id @default(autoincrement())
+  prenom    String
+  nom       String
+  email     String
+  telephone String?
+  equipe    String?
+  message   String?  @db.Text
+  statut    String   @default("pending") // pending | approved | rejected | archived
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("inscriptions")
+}
+
+model Sponsor {
+  id      Int     @id @default(autoincrement())
+  nom     String
+  logoUrl String?
+  siteUrl String?
+  niveau  String  @default("partenaire") // premium | partenaire | supporter | media
+  actif   Boolean @default(true)
+  ordre   Int     @default(0)
+
+  @@map("sponsors")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  email     String
+  sujet     String
+  corps     String   @db.Text
+  lu        Boolean  @default(false)
+  archive   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("messages")
+}
+
+model Parametre {
+  id      Int    @id @default(autoincrement())
+  cle     String @unique
+  valeur  String @db.Text
+  section String @default("general")
+
+  @@map("parametres")
+}
