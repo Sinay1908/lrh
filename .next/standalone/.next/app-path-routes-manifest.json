@@ -23,6 +23,5 @@
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/api/inscriptions/route": "/api/inscriptions",
   "/api/messages/route": "/api/messages",
-  "/favicon.ico/route": "/favicon.ico",
-  "/page": "/"
+  "/favicon.ico/route": "/favicon.ico"
 }
