@@ -241,6 +241,12 @@
       "namedRegex": "^/api/classement(?:/)?$"
     },
     {
+      "page": "/api/dashboard",
+      "regex": "^/api/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/dashboard(?:/)?$"
+    },
+    {
       "page": "/api/equipes",
       "regex": "^/api/equipes(?:/)?$",
       "routeKeys": {},

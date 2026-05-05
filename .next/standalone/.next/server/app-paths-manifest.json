@@ -30,6 +30,7 @@
   "/api/boutique/route": "app/api/boutique/route.js",
   "/api/classement/[id]/route": "app/api/classement/[id]/route.js",
   "/api/classement/route": "app/api/classement/route.js",
+  "/api/dashboard/route": "app/api/dashboard/route.js",
   "/api/equipes/[id]/route": "app/api/equipes/[id]/route.js",
   "/api/equipes/route": "app/api/equipes/route.js",
   "/api/inscriptions/[id]/route": "app/api/inscriptions/[id]/route.js",

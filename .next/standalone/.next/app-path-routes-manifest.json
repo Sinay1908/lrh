@@ -30,6 +30,7 @@
   "/api/boutique/route": "/api/boutique",
   "/api/classement/[id]/route": "/api/classement/[id]",
   "/api/classement/route": "/api/classement",
+  "/api/dashboard/route": "/api/dashboard",
   "/api/equipes/[id]/route": "/api/equipes/[id]",
   "/api/equipes/route": "/api/equipes",
   "/api/inscriptions/[id]/route": "/api/inscriptions/[id]",
