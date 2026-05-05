@@ -14,6 +14,7 @@ export default function EquipesPage() {
   const [editing, setEditing]   = useState<Equipe | null>(null)
   const [form, setForm]         = useState(INIT)
   const [saving, setSaving]     = useState(false)
+  const [error, setError]       = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -29,16 +30,19 @@ export default function EquipesPage() {
   }
 
   const handleSave = async () => {
-    setSaving(true)
+    if (!form.nom.trim()) return
+    setSaving(true); setError(null)
     try {
       const body = { ...form, nbJoueurs: Number(form.nbJoueurs) }
+      let res: Response
       if (modal === 'create') {
-        await fetch('/api/equipes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      } else if (editing) {
-        await fetch(`/api/equipes/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        res = await fetch('/api/equipes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      } else {
+        res = await fetch(`/api/equipes/${editing!.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       }
+      if (!res.ok) { const d = await res.json(); setError(d.error || 'Erreur lors de la sauvegarde'); return }
       await load(); setModal(null)
-    } finally { setSaving(false) }
+    } catch { setError('Erreur réseau') } finally { setSaving(false) }
   }
 
   const handleDelete = async (id: number) => {
@@ -88,7 +92,7 @@ export default function EquipesPage() {
         </ACard>
       )}
 
-      <Modal open={!!modal} onClose={() => setModal(null)} title={modal === 'create' ? 'Nouvelle équipe' : `Modifier — ${editing?.nom}`}>
+      <Modal open={!!modal} onClose={() => { setModal(null); setError(null) }} title={modal === 'create' ? 'Nouvelle équipe' : `Modifier — ${editing?.nom}`}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <AInput label="Nom de l'équipe" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Nationale 1" />
           <AInput label="Niveau" value={form.niveau} onChange={e => setForm({ ...form, niveau: e.target.value })} placeholder="ex. Nat. 1" />
@@ -113,9 +117,14 @@ export default function EquipesPage() {
           <ASelect label="Statut" value={form.actif ? 'true' : 'false'} onChange={e => setForm({ ...form, actif: e.target.value === 'true' })}
             options={[{value:'true',label:'Actif'},{value:'false',label:'Inactif'}]} />
         </div>
+        {error && (
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: A.r8, padding: '10px 14px', color: '#DC2626', fontSize: 13, fontWeight: 500 }}>
+            {error}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6 }}>
-          <ABtn variant="ghost" onClick={() => setModal(null)}>Annuler</ABtn>
-          <ABtn variant="navy" onClick={handleSave} disabled={saving}>{saving ? 'Enregistrement…' : modal === 'create' ? "Créer l'équipe" : 'Enregistrer'}</ABtn>
+          <ABtn variant="ghost" onClick={() => { setModal(null); setError(null) }}>Annuler</ABtn>
+          <ABtn variant="navy" onClick={handleSave} disabled={saving || !form.nom.trim()}>{saving ? 'Enregistrement…' : modal === 'create' ? "Créer l'équipe" : 'Enregistrer'}</ABtn>
         </div>
       </Modal>
     </div>

@@ -14,11 +14,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { nom, niveau, categorie, groupe, couleur, horaire, coach, description, nbJoueurs, actif } = body
-    if (!nom || !niveau || !categorie || !groupe) {
-      return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
+    if (!nom?.trim()) {
+      return NextResponse.json({ error: 'Le nom est requis' }, { status: 400 })
     }
     const equipe = await prisma.equipe.create({
-      data: { nom, niveau, categorie, groupe, couleur: couleur || '#0D2150', horaire, coach, description, nbJoueurs: nbJoueurs || 0, actif: actif ?? true },
+      data: { nom: nom.trim(), niveau: niveau?.trim() || '', categorie: categorie || 'Senior', groupe: groupe || 'senior', couleur: couleur || '#0D2150', horaire: horaire || null, coach: coach || null, description: description || null, nbJoueurs: nbJoueurs || 0, actif: actif ?? true },
     })
     return NextResponse.json(equipe, { status: 201 })
   } catch {

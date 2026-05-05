@@ -16,7 +16,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params
     const body = await request.json()
-    const equipe = await prisma.equipe.update({ where: { id: Number(id) }, data: body })
+    const { nom, niveau, categorie, groupe, couleur, horaire, coach, description, nbJoueurs, actif } = body
+    if (!nom?.trim()) return NextResponse.json({ error: 'Le nom est requis' }, { status: 400 })
+    const equipe = await prisma.equipe.update({
+      where: { id: Number(id) },
+      data: { nom: nom.trim(), niveau: niveau?.trim() || '', categorie, groupe, couleur: couleur || '#0D2150', horaire: horaire || null, coach: coach || null, description: description || null, nbJoueurs: nbJoueurs || 0, actif: actif ?? true },
+    })
     return NextResponse.json(equipe)
   } catch {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
