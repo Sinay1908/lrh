@@ -87,7 +87,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600, fontSize: 12.5, color: C.navy, marginBottom: 6,
 }
 
-export default function InscriptionPageClient({ tarifs }: { tarifs: TarifData[] }) {
+export default function InscriptionPageClient({ tarifs, badge }: { tarifs: TarifData[]; badge: string }) {
   const [form, setForm] = useState({ nom: '', prenom: '', email: '', tel: '', equipe: '', message: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -116,7 +116,7 @@ export default function InscriptionPageClient({ tarifs }: { tarifs: TarifData[] 
 
   return (
     <div>
-      <PageHero badge="Inscriptions 2025" title="Rejoignez" titleAccent="les Aigles"
+      <PageHero badge={badge} title="Rejoignez" titleAccent="les Aigles"
         subtitle="La saison 2025-2026 approche. Rejoignez Lyon Roller Hockey dès maintenant — tout niveau, tout âge." />
 
       {/* ── AVANTAGES ── */}

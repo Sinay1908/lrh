@@ -5,29 +5,37 @@ import { A, ABtn, ACard, AInput, Divider, Icon, ImageUpload, PageHeader } from '
 
 const SECTIONS = [
   { id: 'hero',    label: "Hero / Accueil",       icon: 'star'     },
+  { id: 'pages',   label: 'Badges des pages',      icon: 'tag'      },
   { id: 'contact', label: 'Informations contact',  icon: 'mail'     },
   { id: 'footer',  label: 'Pied de page',          icon: 'settings' },
   { id: 'seo',     label: 'SEO & Métadonnées',     icon: 'search'   },
 ]
 
 const DEFAULTS = {
-  'hero.badge':        'Saison 2024–2025',
-  'hero.title':        'La Passion du Roller Hockey',
-  'hero.subtitle':     "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
-  'hero.ctaPrimary':   'Nous rejoindre',
-  'hero.ctaSecondary': 'Découvrir le club',
-  'contact.address':   'Gymnase du Vieux-Lyon',
-  'contact.street':    '12 rue de la Patinoire',
-  'contact.city':      '69005 Lyon',
-  'contact.phone':     '04 72 00 00 00',
-  'contact.email':     'contact@lyonrollerhockey.fr',
-  'contact.schedule':  'Mar & Jeu 18h – 21h · Sam 9h – 12h',
-  'footer.description': "Club de roller hockey lyonnais fondé en 1974. Passion, sport et esprit d'équipe depuis plus de 50 ans.",
-  'footer.facebook':   'https://facebook.com/lyonrollerhockey',
-  'footer.instagram':  'https://instagram.com/lyonrollerhockey',
-  'footer.twitter':    '',
-  'seo.title':         'Lyon Roller Hockey — Les Aigles de Lyon',
-  'seo.description':   "Club de roller hockey de Lyon fondé en 1974. Équipes de Nationale 1 à la catégorie Loisir. Inscriptions ouvertes.",
+  'hero.badge':           'Saison 2024–2025',
+  'hero.title':           'La Passion du Roller Hockey',
+  'hero.subtitle':        "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
+  'hero.ctaPrimary':      'Nous rejoindre',
+  'hero.ctaSecondary':    'Découvrir le club',
+  'equipes.badge':        'Saison 2024–2025',
+  'calendrier.badge':     'Saison 2024–2025',
+  'classement.badge':     'Saison 2024–2025',
+  'inscription.badge':    'Inscriptions 2025',
+  'boutique.badge':       'Collection 2025',
+  'club.badge':           'Depuis 1974',
+  'contact.badge':        'Contactez-nous',
+  'contact.address':      'Gymnase du Vieux-Lyon',
+  'contact.street':       '12 rue de la Patinoire',
+  'contact.city':         '69005 Lyon',
+  'contact.phone':        '04 72 00 00 00',
+  'contact.email':        'contact@lyonrollerhockey.fr',
+  'contact.schedule':     'Mar & Jeu 18h – 21h · Sam 9h – 12h',
+  'footer.description':   "Club de roller hockey lyonnais fondé en 1974. Passion, sport et esprit d'équipe depuis plus de 50 ans.",
+  'footer.facebook':      'https://facebook.com/lyonrollerhockey',
+  'footer.instagram':     'https://instagram.com/lyonrollerhockey',
+  'footer.twitter':       '',
+  'seo.title':            'Lyon Roller Hockey — Les Aigles de Lyon',
+  'seo.description':      "Club de roller hockey de Lyon fondé en 1974. Équipes de Nationale 1 à la catégorie Loisir. Inscriptions ouvertes.",
 }
 
 type ParamKey = keyof typeof DEFAULTS
@@ -124,6 +132,23 @@ export default function ParametresPage() {
                   <span style={{ border: '1.5px solid rgba(255,255,255,0.35)', color: '#fff', padding: '8px 18px', borderRadius: A.r8, fontFamily: "'Barlow',sans-serif", fontWeight: 700, fontSize: 13 }}>{get('hero.ctaSecondary')}</span>
                 </div>
               </div>
+            </ACard>
+          )}
+
+          {section === 'pages' && (
+            <ACard>
+              <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 18, color: A.textPri, marginBottom: 6 }}>Badges des pages publiques</div>
+              <p style={{ fontSize: 13, color: A.muted, marginBottom: 20, lineHeight: 1.6 }}>
+                La petite bulle rouge affichée en haut de chaque page. Modifiez-la pour indiquer la saison en cours, une collection, etc.
+              </p>
+              <AInput label="Page Accueil (hero)"      value={get('hero.badge')}        onChange={e => set('hero.badge', e.target.value)}        placeholder="ex. Saison 2025–2026" />
+              <AInput label="Page Équipes"              value={get('equipes.badge')}     onChange={e => set('equipes.badge', e.target.value)}     placeholder="ex. Saison 2025–2026" />
+              <AInput label="Page Calendrier"           value={get('calendrier.badge')}  onChange={e => set('calendrier.badge', e.target.value)}  placeholder="ex. Saison 2025–2026" />
+              <AInput label="Page Classement"           value={get('classement.badge')}  onChange={e => set('classement.badge', e.target.value)}  placeholder="ex. Saison 2025–2026" />
+              <AInput label="Page Inscription"          value={get('inscription.badge')} onChange={e => set('inscription.badge', e.target.value)} placeholder="ex. Inscriptions 2026" />
+              <AInput label="Page Boutique"             value={get('boutique.badge')}    onChange={e => set('boutique.badge', e.target.value)}    placeholder="ex. Collection 2026" />
+              <AInput label="Page Le Club"              value={get('club.badge')}        onChange={e => set('club.badge', e.target.value)}        placeholder="ex. Depuis 1974" />
+              <AInput label="Page Contact"              value={get('contact.badge')}     onChange={e => set('contact.badge', e.target.value)}     placeholder="ex. Contactez-nous" />
             </ACard>
           )}
 
