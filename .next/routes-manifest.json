@@ -37,6 +37,86 @@
         "nxtPnextauth": "nxtPnextauth"
       },
       "namedRegex": "^/api/auth/(?<nxtPnextauth>.+?)(?:/)?$"
+    },
+    {
+      "page": "/api/boutique/[id]",
+      "regex": "^/api/boutique/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/boutique/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/classement/[id]",
+      "regex": "^/api/classement/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/classement/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/equipes/[id]",
+      "regex": "^/api/equipes/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/equipes/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/inscriptions/[id]",
+      "regex": "^/api/inscriptions/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/inscriptions/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/matchs/[id]",
+      "regex": "^/api/matchs/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/matchs/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/messages/[id]",
+      "regex": "^/api/messages/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/messages/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/palmares/[id]",
+      "regex": "^/api/palmares/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/palmares/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/sponsors/[id]",
+      "regex": "^/api/sponsors/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/sponsors/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/staff/[id]",
+      "regex": "^/api/staff/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/staff/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/tarifs/[id]",
+      "regex": "^/api/tarifs/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/tarifs/(?<nxtPid>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -71,6 +151,18 @@
       "namedRegex": "^/admin/actualites(?:/)?$"
     },
     {
+      "page": "/admin/boutique",
+      "regex": "^/admin/boutique(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/boutique(?:/)?$"
+    },
+    {
+      "page": "/admin/classement",
+      "regex": "^/admin/classement(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/classement(?:/)?$"
+    },
+    {
       "page": "/admin/equipes",
       "regex": "^/admin/equipes(?:/)?$",
       "routeKeys": {},
@@ -101,6 +193,12 @@
       "namedRegex": "^/admin/messages(?:/)?$"
     },
     {
+      "page": "/admin/palmares",
+      "regex": "^/admin/palmares(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/palmares(?:/)?$"
+    },
+    {
       "page": "/admin/parametres",
       "regex": "^/admin/parametres(?:/)?$",
       "routeKeys": {},
@@ -113,10 +211,40 @@
       "namedRegex": "^/admin/partenaires(?:/)?$"
     },
     {
+      "page": "/admin/staff",
+      "regex": "^/admin/staff(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/staff(?:/)?$"
+    },
+    {
+      "page": "/admin/tarifs",
+      "regex": "^/admin/tarifs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/tarifs(?:/)?$"
+    },
+    {
       "page": "/api/articles",
       "regex": "^/api/articles(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/articles(?:/)?$"
+    },
+    {
+      "page": "/api/boutique",
+      "regex": "^/api/boutique(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/boutique(?:/)?$"
+    },
+    {
+      "page": "/api/classement",
+      "regex": "^/api/classement(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/classement(?:/)?$"
+    },
+    {
+      "page": "/api/equipes",
+      "regex": "^/api/equipes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/equipes(?:/)?$"
     },
     {
       "page": "/api/inscriptions",
@@ -125,10 +253,46 @@
       "namedRegex": "^/api/inscriptions(?:/)?$"
     },
     {
+      "page": "/api/matchs",
+      "regex": "^/api/matchs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/matchs(?:/)?$"
+    },
+    {
       "page": "/api/messages",
       "regex": "^/api/messages(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/messages(?:/)?$"
+    },
+    {
+      "page": "/api/palmares",
+      "regex": "^/api/palmares(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/palmares(?:/)?$"
+    },
+    {
+      "page": "/api/parametres",
+      "regex": "^/api/parametres(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/parametres(?:/)?$"
+    },
+    {
+      "page": "/api/sponsors",
+      "regex": "^/api/sponsors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/sponsors(?:/)?$"
+    },
+    {
+      "page": "/api/staff",
+      "regex": "^/api/staff(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/staff(?:/)?$"
+    },
+    {
+      "page": "/api/tarifs",
+      "regex": "^/api/tarifs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/tarifs(?:/)?$"
     },
     {
       "page": "/boutique",

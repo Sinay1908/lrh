@@ -1,0 +1,3 @@
+{
+  "/api/palmares/[id]/route": "app/api/palmares/[id]/route.js"
+}
