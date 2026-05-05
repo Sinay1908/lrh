@@ -71,6 +71,14 @@
       "namedRegex": "^/api/equipes/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/api/faq/[id]",
+      "regex": "^/api/faq/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/faq/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/api/files/[name]",
       "regex": "^/api/files/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -191,6 +199,12 @@
       "namedRegex": "^/admin/equipes(?:/)?$"
     },
     {
+      "page": "/admin/faq",
+      "regex": "^/admin/faq(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/faq(?:/)?$"
+    },
+    {
       "page": "/admin/inscriptions",
       "regex": "^/admin/inscriptions(?:/)?$",
       "routeKeys": {},
@@ -279,6 +293,12 @@
       "regex": "^/api/equipes(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/equipes(?:/)?$"
+    },
+    {
+      "page": "/api/faq",
+      "regex": "^/api/faq(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/faq(?:/)?$"
     },
     {
       "page": "/api/inscriptions",

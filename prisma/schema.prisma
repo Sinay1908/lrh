@@ -195,3 +195,15 @@ model ProduitBoutique {
 
   @@map("boutique")
 }
+
+model FaqItem {
+  id        Int      @id @default(autoincrement())
+  question  String   @db.Text
+  reponse   String   @db.Text
+  actif     Boolean  @default(true)
+  ordre     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faq")
+}

@@ -19,6 +19,7 @@ const NAV_ITEMS: { id: string; label: string; icon: string; href: string; badge?
   { id: 'palmares',      label: 'Palmarès',           icon: 'star',          href: '/admin/palmares' },
   { id: 'registrations', label: 'Inscriptions',       icon: 'registrations', href: '/admin/inscriptions' },
   { id: 'sponsors',      label: 'Partenaires',        icon: 'sponsors',      href: '/admin/partenaires' },
+  { id: 'faq',           label: 'FAQ Contact',         icon: 'messages',      href: '/admin/faq' },
   { id: 'messages',      label: 'Messages',           icon: 'messages',      href: '/admin/messages' },
   { id: 'settings',      label: 'Paramètres',         icon: 'settings',      href: '/admin/parametres' },
   { id: 'administration', label: 'Administration',    icon: 'settings',      href: '/admin/administration' },

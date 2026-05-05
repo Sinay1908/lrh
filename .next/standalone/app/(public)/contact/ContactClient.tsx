@@ -34,6 +34,8 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
   )
 }
 
+export interface FaqItem { id: number; question: string; reponse: string; ordre: number }
+
 const CONTACT_DEFAULTS = {
   address:  'Gymnase du Vieux-Lyon',
   street:   '12 rue de la Patinoire',
@@ -43,12 +45,13 @@ const CONTACT_DEFAULTS = {
   schedule: 'Mar & Jeu 18h – 21h · Sam 9h – 12h',
 }
 
-const FAQS = [
-  { q: "Peut-on venir essayer une séance avant de s'inscrire ?",  a: "Oui, absolument ! Nous proposons une séance d'essai gratuite et sans engagement pour toutes les catégories." },
-  { q: "À partir de quel âge peut-on s'inscrire ?",               a: "Nos catégories jeunes débutent à 8 ans (U11). N'hésitez pas à nous contacter pour les plus petits." },
-  { q: "Faut-il avoir ses propres patins pour commencer ?",        a: "Non, le club met du matériel à disposition lors de la période d'essai. Nous recommandons ensuite d'acquérir son propre équipement progressivement." },
-  { q: "Le club est-il accessible aux débutants complets ?",       a: "Oui, notre section Loisir et nos équipes jeunes accueillent des débutants. Nos entraîneurs adaptent leur pédagogie à tous les niveaux." },
-  { q: "Peut-on payer la cotisation en plusieurs fois ?",          a: "Oui, des facilités de paiement sont possibles sur demande. Des aides existent : Pass Sport, coupons sport, aide municipale." },
+// FAQs statiques utilisées comme fallback si la DB est vide
+const FAQS_FALLBACK = [
+  { id: -1, question: "Peut-on venir essayer une séance avant de s'inscrire ?",  reponse: "Oui, absolument ! Nous proposons une séance d'essai gratuite et sans engagement pour toutes les catégories.", ordre: 0 },
+  { id: -2, question: "À partir de quel âge peut-on s'inscrire ?",               reponse: "Nos catégories jeunes débutent à 8 ans (U11). N'hésitez pas à nous contacter pour les plus petits.", ordre: 1 },
+  { id: -3, question: "Faut-il avoir ses propres patins pour commencer ?",        reponse: "Non, le club met du matériel à disposition lors de la période d'essai. Nous recommandons ensuite d'acquérir son propre équipement progressivement.", ordre: 2 },
+  { id: -4, question: "Le club est-il accessible aux débutants complets ?",       reponse: "Oui, notre section Loisir et nos équipes jeunes accueillent des débutants. Nos entraîneurs adaptent leur pédagogie à tous les niveaux.", ordre: 3 },
+  { id: -5, question: "Peut-on payer la cotisation en plusieurs fois ?",          reponse: "Oui, des facilités de paiement sont possibles sur demande. Des aides existent : Pass Sport, coupons sport, aide municipale.", ordre: 4 },
 ]
 
 const fieldStyle: React.CSSProperties = {
@@ -62,7 +65,8 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600, fontSize: 12.5, color: C.navy, marginBottom: 6,
 }
 
-export default function ContactClient({ badge }: { badge: string }) {
+export default function ContactClient({ badge, faqs }: { badge: string; faqs: FaqItem[] }) {
+  const faqList = faqs.length > 0 ? faqs : FAQS_FALLBACK
   const [form, setForm]       = useState({ nom: '', email: '', sujet: '', message: '' })
   const [sent, setSent]       = useState(false)
   const [loading, setLoading] = useState(false)
@@ -190,8 +194,8 @@ export default function ContactClient({ badge }: { badge: string }) {
       <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <SectionHeader label="Questions fréquentes" title="FAQ" center />
-          {FAQS.map((faq, i) => (
-            <FaqItem key={i} q={faq.q} a={faq.a} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
+          {faqList.map((faq, i) => (
+            <FaqItem key={faq.id} q={faq.question} a={faq.reponse} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
           ))}
         </div>
       </div>
