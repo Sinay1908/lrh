@@ -1,9 +1,7 @@
-// Server Component — lit les paramètres hero directement depuis Prisma
-// Les valeurs sont injectées dans le HTML initial, sans dépendre du JS client
+// Server Component — lit les paramètres hero et les sponsors directement depuis Prisma
 import { prisma } from '@/lib/prisma'
-import HomePageClient, { type HeroParams } from './HomePageClient'
+import HomePageClient, { type HeroParams, type DbSponsor } from './HomePageClient'
 
-// Toujours rendu côté serveur, jamais mis en cache statiquement
 export const dynamic = 'force-dynamic'
 
 const HERO_DEFAULTS: HeroParams = {
@@ -16,9 +14,14 @@ const HERO_DEFAULTS: HeroParams = {
 
 export default async function HomePage() {
   let hero = { ...HERO_DEFAULTS }
+  let sponsors: DbSponsor[] = []
 
   try {
-    const rows = await prisma.parametre.findMany({ where: { section: 'hero' } })
+    const [rows, sponsorRows] = await Promise.all([
+      prisma.parametre.findMany({ where: { section: 'hero' } }),
+      prisma.sponsor.findMany({ where: { actif: true }, orderBy: [{ niveau: 'asc' }, { ordre: 'asc' }] }),
+    ])
+
     const d: Record<string, string> = {}
     rows.forEach(p => { d[p.cle] = p.valeur })
     hero = {
@@ -28,9 +31,11 @@ export default async function HomePage() {
       ctaPrimary:   d['hero.ctaPrimary']   || hero.ctaPrimary,
       ctaSecondary: d['hero.ctaSecondary'] || hero.ctaSecondary,
     }
+
+    sponsors = sponsorRows
   } catch {
-    // DB indisponible → valeurs par défaut
+    // DB indisponible → valeurs par défaut, pas de sponsors
   }
 
-  return <HomePageClient hero={hero} />
+  return <HomePageClient hero={hero} sponsors={sponsors} />
 }

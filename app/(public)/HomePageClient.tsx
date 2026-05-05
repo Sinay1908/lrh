@@ -8,6 +8,8 @@ interface DbMatch { id: number; adversaire: string; competition: string; domicil
 interface DbArticle { id: number; titre: string; categorie: string | null; extrait: string | null; imageUrl: string | null; publishedAt: string | null; createdAt: string }
 interface DbEquipe { id: number; nom: string; categorie: string; couleur: string }
 
+export interface DbSponsor { id: number; nom: string; logoUrl: string | null; siteUrl: string | null; niveau: string; ordre: number }
+
 export interface HeroParams {
   badge:        string
   title:        string
@@ -43,7 +45,7 @@ function fmtDate(dateStr: string) {
   return { date: d.getDate().toString().padStart(2,'0'), day: d.toLocaleDateString('fr-FR',{month:'short'}).toUpperCase().replace('.','') }
 }
 
-export default function HomePageClient({ hero }: { hero: HeroParams }) {
+export default function HomePageClient({ hero, sponsors }: { hero: HeroParams; sponsors: DbSponsor[] }) {
   const [matchs, setMatchs]     = useState<DbMatch[]>([])
   const [articles, setArticles] = useState<DbArticle[]>([])
   const [equipes, setEquipes]   = useState<DbEquipe[]>([])
@@ -161,6 +163,39 @@ export default function HomePageClient({ hero }: { hero: HeroParams }) {
           )}
         </div>
       </div>
+
+      {/* ── PARTENAIRES ── */}
+      {sponsors.length > 0 && (
+        <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
+          <div style={{ ...MAX_W }}>
+            <SectionHeader label="Ils nous soutiennent" title="Nos Partenaires" center />
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 32, marginTop: 8 }}>
+              {sponsors.map(s => (
+                <a key={s.id}
+                  href={s.siteUrl || undefined}
+                  target={s.siteUrl ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {s.logoUrl ? (
+                    <img src={s.logoUrl} alt={s.nom}
+                      style={{ maxHeight: 64, maxWidth: 160, objectFit: 'contain', filter: 'grayscale(30%)', transition: 'filter 0.2s', opacity: 0.85 }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(0%)'; (e.currentTarget as HTMLImageElement).style.opacity = '1' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(30%)'; (e.currentTarget as HTMLImageElement).style.opacity = '0.85' }}
+                    />
+                  ) : (
+                    <div style={{
+                      padding: '12px 24px', borderRadius: R.card,
+                      border: `1.5px solid ${C.border}`, color: C.navy,
+                      fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15,
+                      letterSpacing: 0.5, whiteSpace: 'nowrap',
+                    }}>{s.nom}</div>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── CTA ── */}
       <CTABanner title="Rejoignez les Aigles de Lyon" subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !" btnLabel="S'inscrire maintenant" btnHref="/inscription" />
