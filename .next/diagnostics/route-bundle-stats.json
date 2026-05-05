@@ -240,12 +240,12 @@
   },
   {
     "route": "/inscription",
-    "firstLoadUncompressedJsBytes": 565937,
+    "firstLoadUncompressedJsBytes": 566081,
     "firstLoadChunkPaths": [
       ".next/static/chunks/0x.73w57rn4ou.js",
       ".next/static/chunks/0i.l9589uvx0j.js",
       ".next/static/chunks/0bcu-r626xfi3.js",
-      ".next/static/chunks/0cj0qq5jkpk~x.js",
+      ".next/static/chunks/15w4kamz.v1ns.js",
       ".next/static/chunks/0pgo8h59a52ke.js",
       ".next/static/chunks/0dcu67gngfgpb.js",
       ".next/static/chunks/14l~.r2kq13je.js",
