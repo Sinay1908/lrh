@@ -99,10 +99,13 @@ export default function StaffPage() {
     setSaving(true); setError(null)
     try {
       const body = { ...form, ordre: Number(form.ordre), photoUrl: form.photoUrl || null }
-      if (editing) await fetch(`/api/staff/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      else await fetch('/api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      const url    = editing ? `/api/staff/${editing.id}` : '/api/staff'
+      const method = editing ? 'PUT' : 'POST'
+      const res  = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Erreur serveur'); return }
       await load(); closeModal()
-    } finally { setSaving(false) }
+    } catch { setError('Erreur réseau') } finally { setSaving(false) }
   }
 
   const handleDelete = async (id: number) => {
