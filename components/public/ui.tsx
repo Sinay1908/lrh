@@ -244,13 +244,14 @@ export function StatBlock({ number, label, dark }: { number: string; label: stri
 }
 
 // ── ContentCard ───────────────────────────────────────────────────────────────
-export function ContentCard({ badge, badgeColor, title, excerpt, meta, href }: {
+export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, imageUrl }: {
   badge?:      string
   badgeColor?: string
   title:       string
   excerpt?:    string
   meta?:       string
   href?:       string
+  imageUrl?:   string | null
 }) {
   const [hov, setHov] = useState(false)
   const Tag = href ? 'a' : 'div'
@@ -267,8 +268,13 @@ export function ContentCard({ badge, badgeColor, title, excerpt, meta, href }: {
         position: 'relative', overflow: 'hidden',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <Image src="/assets/mascotte.png" alt="" width={160} height={160}
-          style={{ height: '86%', width: 'auto', opacity: 0.20, objectFit: 'contain', pointerEvents: 'none' }} />
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <Image src="/assets/mascotte.png" alt="" width={160} height={160}
+            style={{ height: '86%', width: 'auto', opacity: 0.20, objectFit: 'contain', pointerEvents: 'none' }} />
+        )}
         {badge && (
           <div style={{ position: 'absolute', top: 14, left: 14 }}>
             <Badge bg={badgeColor || C.red}>{badge}</Badge>

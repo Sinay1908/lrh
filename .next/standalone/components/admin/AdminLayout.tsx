@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { A, Icon } from './ui'
 
 const NAV_ITEMS: { id: string; label: string; icon: string; href: string; badge?: string | number }[] = [
@@ -57,6 +57,10 @@ function Sidebar({ pathname }: { pathname: string }) {
   const activeId = NAV_ITEMS.find(n =>
     n.href === '/admin' ? pathname === '/admin' : pathname.startsWith(n.href)
   )?.id ?? 'dashboard'
+  const { data: session } = useSession()
+  const userName  = session?.user?.name  || session?.user?.email?.split('@')[0] || 'Admin'
+  const userEmail = session?.user?.email || ''
+  const initials  = userName.slice(0, 2).toUpperCase()
 
   return (
     <aside style={{ width: 240, flexShrink: 0, background: A.navy, height: '100vh',
@@ -86,11 +90,12 @@ function Sidebar({ pathname }: { pathname: string }) {
           <div style={{ width: 30, height: 30, borderRadius: '50%',
             background: 'rgba(168,214,232,0.15)', display: 'flex', alignItems: 'center',
             justifyContent: 'center', fontFamily: "'Barlow Condensed',sans-serif",
-            fontWeight: 700, fontSize: 13, color: '#A8D6E8', flexShrink: 0 }}>AD</div>
+            fontWeight: 700, fontSize: 13, color: '#A8D6E8', flexShrink: 0 }}>{initials}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: '#fff', fontWeight: 600, fontSize: 12.5,
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Admin LRH</div>
-            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11 }}>admin@lyonrh.fr</div>
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userName}</div>
+            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userEmail}</div>
           </div>
         </div>
         <button onClick={() => signOut({ callbackUrl: '/admin/login' })}
@@ -111,6 +116,9 @@ function TopBar({ title, pathname }: { title: string; pathname: string }) {
   const pageTitle = NAV_ITEMS.find(n =>
     n.href === '/admin' ? pathname === '/admin' : pathname.startsWith(n.href)
   )?.label ?? title
+  const { data: session } = useSession()
+  const userName = session?.user?.name || session?.user?.email?.split('@')[0] || 'Admin'
+  const initials = userName.slice(0, 2).toUpperCase()
   return (
     <div style={{ height: 60, background: A.white, borderBottom: `1px solid ${A.border}`,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -125,10 +133,10 @@ function TopBar({ title, pathname }: { title: string; pathname: string }) {
           <Icon name="eye" size={13} />
           Voir le site
         </Link>
-        <div style={{ width: 34, height: 34, borderRadius: '50%',
+        <div title={session?.user?.email || ''} style={{ width: 34, height: 34, borderRadius: '50%',
           background: A.navy, display: 'flex', alignItems: 'center',
           justifyContent: 'center', fontFamily: "'Barlow Condensed',sans-serif",
-          fontWeight: 700, fontSize: 13, color: '#A8D6E8', cursor: 'pointer' }}>AD</div>
+          fontWeight: 700, fontSize: 13, color: '#A8D6E8', cursor: 'pointer' }}>{initials}</div>
       </div>
     </div>
   )

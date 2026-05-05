@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { C, R, SH, SECTION_PAD, SECTION_PAD_SM, MAX_W, Badge, Btn, SectionHeader, CTABanner, MatchCard, ContentCard } from '@/components/public/ui'
 
 interface DbMatch { id: number; adversaire: string; competition: string; domicile: boolean; lieu: string | null; date: string; heure: string | null; statut: string; scoreDom: number | null; scoreExt: number | null }
-interface DbArticle { id: number; titre: string; categorie: string | null; extrait: string | null; publishedAt: string | null; createdAt: string }
+interface DbArticle { id: number; titre: string; categorie: string | null; extrait: string | null; imageUrl: string | null; publishedAt: string | null; createdAt: string }
 interface DbEquipe { id: number; nom: string; categorie: string; couleur: string }
 
 function HeroStatCard({ number, label }: { number: string; label: string }) {
@@ -115,7 +115,7 @@ export default function HomePage() {
               {articles.map(a => {
                 const dateStr = a.publishedAt || a.createdAt
                 const meta = new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
-                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || ''} />
+                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || ''} imageUrl={a.imageUrl} />
               })}
             </div>
           )}
