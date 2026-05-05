@@ -39,25 +39,239 @@
   --shadow-modal:      0 16px 48px rgba(0,0,0,0.22);
 }
 
+/* ── Reset ───────────────────────────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
-
 body {
   font-family: 'Barlow', sans-serif;
   background-color: #F7F9FB;
   color: #0D2150;
+  min-width: 320px;        /* never narrower than 320px */
+  overflow-x: hidden;      /* prevent horizontal scroll */
 }
 
-/* Nav responsive breakpoint */
+/* Images always fluid */
+img { max-width: 100%; display: block; }
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeInUp 0.22s ease forwards; }
+
+/* ── PUBLIC NAV — burger at 960px ────────────────────────────────────────── */
 @media (max-width: 960px) {
   .nav-desktop  { display: none !important; }
   .nav-cta-desk { display: none !important; }
   .nav-ham      { display: flex !important; }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── PUBLIC — section padding responsive ─────────────────────────────────── */
+/* Add className="rsp-section" alongside the inline padding */
+@media (max-width: 767px) {
+  .rsp-section {
+    padding-top:    48px !important;
+    padding-bottom: 48px !important;
+    padding-left:   16px !important;
+    padding-right:  16px !important;
+  }
+  .rsp-section-sm {
+    padding-top:    32px !important;
+    padding-bottom: 32px !important;
+    padding-left:   16px !important;
+    padding-right:  16px !important;
+  }
 }
-.animate-fade-in { animation: fadeInUp 0.22s ease forwards; }
+
+/* ── PUBLIC — 2-column grid → 1 column on mobile ────────────────────────── */
+/* Used on club/page.tsx intro, any "1fr 1fr" two-column sections */
+.rsp-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .rsp-2col {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* ── PUBLIC — hero grid (text + stats cards) ─────────────────────────────── */
+.rsp-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 48px;
+  align-items: center;
+}
+/* Hide stat cards on small screens — they reappear as a row below title */
+.rsp-hero-stats-desktop { display: grid; }
+.rsp-hero-stats-mobile  { display: none; }
+
+@media (max-width: 900px) {
+  .rsp-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .rsp-hero-stats-desktop { display: none; }
+  .rsp-hero-stats-mobile  { display: grid !important; }
+}
+
+/* ── PUBLIC — page hero padding on mobile ────────────────────────────────── */
+@media (max-width: 767px) {
+  .rsp-page-hero-inner {
+    padding: 48px 16px 64px !important;
+  }
+}
+
+/* ── FORMS — 2-column grid → 1 column on small screens ──────────────────── */
+/* Used in public inscription page & all admin modal forms */
+.rsp-form-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;  /* matches AInput margin-bottom */
+}
+@media (max-width: 620px) {
+  .rsp-form-2col { grid-template-columns: 1fr; }
+}
+
+/* ── ADMIN LAYOUT — sidebar becomes a drawer on mobile ───────────────────── */
+.admin-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #0D2150;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  overflow-y: auto;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-main {
+  margin-left: 240px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+/* Overlay behind open sidebar */
+.admin-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 24, 56, 0.55);
+  z-index: 190;
+  cursor: pointer;
+}
+.admin-overlay.open { display: block; }
+
+/* Hamburger — hidden on desktop */
+.admin-ham-btn { display: none !important; }
+
+@media (max-width: 900px) {
+  /* Sidebar slides off-screen by default */
+  .admin-sidebar            { transform: translateX(-100%); }
+  .admin-sidebar.open       { transform: translateX(0);     }
+
+  /* Main content fills full width */
+  .admin-main { margin-left: 0; }
+
+  /* Show hamburger */
+  .admin-ham-btn { display: flex !important; }
+}
+
+/* ── ADMIN — TopBar responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .admin-topbar-title { font-size: 13px !important; }
+  .admin-topbar-link  { display: none !important; }
+}
+
+/* ── ADMIN — page header wraps nicely on mobile ──────────────────────────── */
+@media (max-width: 640px) {
+  .admin-page-content { padding: 18px 14px 32px !important; }
+}
+
+/* ── ADMIN — modal full-screen on very small phones ─────────────────────── */
+@media (max-width: 480px) {
+  /* The modal wrapper already has padding: 20, let's tighten on small phones */
+  .rsp-modal-pad { padding: 8px !important; }
+}
+
+/* ── MATCH CARD — responsive on mobile ──────────────────────────────────── */
+@media (max-width: 500px) {
+  .match-card-time-right { display: none !important; }
+  .match-card { padding: 14px 14px !important; gap: 12px !important; }
+}
+
+/* ── FOOTER — bottom bar stacks on mobile ────────────────────────────────── */
+@media (max-width: 640px) {
+  .footer-bottom {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .footer-legal { flex-wrap: wrap !important; gap: 12px !important; }
+}
+
+/* ── CLUB PAGE — timeline single column on mobile ───────────────────────── */
+@media (max-width: 640px) {
+  .timeline-item {
+    grid-template-columns: 1fr !important;
+  }
+  .timeline-center { display: none !important; }
+  .timeline-empty  { display: none !important; }
+  .timeline-content {
+    padding-left:  0 !important;
+    padding-right: 0 !important;
+    text-align:    left !important;
+  }
+}
+
+/* ── STATS BAR — 2×3 on mobile instead of 6 inline ─────────────────────── */
+@media (max-width: 640px) {
+  .stats-bar-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .stats-bar-divider { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+}
+
+/* ── GENERIC — touch-friendly min-height for interactive elements ─────────── */
+@media (max-width: 767px) {
+  .touch-target {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ── TABLES — horizontal scroll on mobile ────────────────────────────────── */
+/* Tables already have overflow-x:auto in ATable; this just adds touch scrolling */
+.rsp-table-wrap { -webkit-overflow-scrolling: touch; }
+
+/* ── BOUTIQUE / CARDS — ensure 1-col fallback ───────────────────────────── */
+@media (max-width: 380px) {
+  .rsp-auto-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── ADMIN DASHBOARD — main grid stacks on mobile ───────────────────────── */
+.rsp-admin-main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+@media (max-width: 900px) { .rsp-admin-main-grid { grid-template-columns: 1fr; } }
+
+/* ── FORMS — 3-column grid → 1 column on small screens ──────────────────── */
+.rsp-form-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 768px) { .rsp-form-3col { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .rsp-form-3col { grid-template-columns: 1fr; } }

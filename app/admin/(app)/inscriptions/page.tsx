@@ -72,7 +72,7 @@ export default function InscriptionsPage() {
       <Modal open={!!detail} onClose={() => setDetail(null)} title={detail ? `${detail.prenom} ${detail.nom}` : ''} width={520}>
         {detail && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div className="rsp-form-2col">
               <div><div style={{ fontSize: 11, fontWeight: 600, color: A.muted, marginBottom: 3 }}>EMAIL</div><div style={{ fontSize: 13.5 }}>{detail.email}</div></div>
               <div><div style={{ fontSize: 11, fontWeight: 600, color: A.muted, marginBottom: 3 }}>TÉLÉPHONE</div><div style={{ fontSize: 13.5 }}>{detail.telephone || '—'}</div></div>
             </div>

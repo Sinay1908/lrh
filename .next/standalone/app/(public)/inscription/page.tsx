@@ -95,21 +95,21 @@ export default function InscriptionPage() {
         subtitle="La saison 2025-2026 approche. Rejoignez Lyon Roller Hockey dès maintenant — tout niveau, tout âge." />
 
       {/* ── AVANTAGES ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Vos avantages" title="Pourquoi nous rejoindre ?" center
             subtitle="En rejoignant Lyon Roller Hockey, vous intégrez bien plus qu'un club sportif." />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 18 }}>
             {BENEFITS.map(b => <BenefitCard key={b.title} icon={b.icon} title={b.title} desc={b.desc} />)}
           </div>
         </div>
       </div>
 
       {/* ── ÉTAPES ── */}
-      <div style={{ background: '#fff', padding: SECTION_PAD }}>
+      <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Comment s'inscrire" title="3 Étapes Simples" center />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 32, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 32, maxWidth: 900, margin: '0 auto', position: 'relative' }}>
             {STEPS.map((s, i) => (
               <div key={s.num} style={{ textAlign: 'center', position: 'relative' }}>
                 {i < STEPS.length - 1 && (
@@ -130,7 +130,7 @@ export default function InscriptionPage() {
       </div>
 
       {/* ── TARIFS ── */}
-      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }}>
+      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Cotisations" title="Tarifs Saison 2025-2026" center
             subtitle="Tous les tarifs incluent la licence fédérale FFRS. Des facilités de paiement sont possibles." />
@@ -145,7 +145,7 @@ export default function InscriptionPage() {
       </div>
 
       {/* ── DOCUMENTS ── */}
-      <div style={{ background: '#fff', padding: SECTION_PAD_SM }}>
+      <div style={{ background: '#fff', padding: SECTION_PAD_SM }} className="rsp-section-sm">
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <SectionHeader label="Dossier d'inscription" title="Documents Requis" />
           <div style={{ background: C.offWhite, borderRadius: R.card, padding: '28px 32px' }}>
@@ -162,7 +162,7 @@ export default function InscriptionPage() {
       </div>
 
       {/* ── FORMULAIRE ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ maxWidth: 660, margin: '0 auto' }}>
           <SectionHeader label="Première étape" title="Demande d'inscription" center
             subtitle="Remplissez ce formulaire et nous vous recontacterons dans les 48 heures." />
@@ -178,8 +178,9 @@ export default function InscriptionPage() {
               </Btn>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: R.card, padding: '36px 32px', boxShadow: SH.card }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: R.card, padding: '36px 28px', boxShadow: SH.card }}>
+              {/* Prénom + Nom → 2 cols desktop, 1 col mobile */}
+              <div className="rsp-form-2col">
                 {([['prenom', 'Prénom *'], ['nom', 'Nom *']] as [keyof typeof form, string][]).map(([k, l]) => (
                   <div key={k}>
                     <label style={labelStyle}>{l}</label>

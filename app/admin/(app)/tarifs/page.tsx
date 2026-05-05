@@ -79,13 +79,13 @@ export default function TarifsPage() {
       )}
 
       <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier le tarif' : 'Nouveau tarif'}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Saison" value={form.saison} onChange={e => setForm({ ...form, saison: e.target.value })} required placeholder="ex. 2025-2026" />
           <AInput label="Montant (€)" type="number" value={form.montant} onChange={e => setForm({ ...form, montant: e.target.value })} required placeholder="ex. 250" />
         </div>
         <AInput label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })} required placeholder="ex. Adulte, Jeune U17, Loisir, Famille..." />
         <AInput label="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} placeholder="Détails inclus, conditions particulières…" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Ordre" type="number" value={form.ordre} onChange={e => setForm({ ...form, ordre: e.target.value })} />
           <ASelect label="Statut" value={form.actif ? 'true' : 'false'} onChange={e => setForm({ ...form, actif: e.target.value === 'true' })} options={[{value:'true',label:'Actif'},{value:'false',label:'Inactif'}]} />
         </div>

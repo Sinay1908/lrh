@@ -86,7 +86,7 @@ export default function MessagesPage() {
       <Modal open={!!detail} onClose={() => setDetail(null)} title={detail?.sujet || ''} width={560}>
         {detail && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div className="rsp-form-2col">
               <div><div style={{ fontSize: 11, fontWeight: 600, color: A.muted, marginBottom: 3 }}>DE</div><div style={{ fontSize: 13.5 }}>{detail.nom} &lt;{detail.email}&gt;</div></div>
               <div><div style={{ fontSize: 11, fontWeight: 600, color: A.muted, marginBottom: 3 }}>DATE</div><div style={{ fontSize: 13.5 }}>{new Date(detail.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' })}</div></div>
             </div>

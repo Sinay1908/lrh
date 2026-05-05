@@ -158,11 +158,11 @@ export default function StaffPage() {
       </ACard>
 
       <Modal open={modal} onClose={closeModal} title={editing ? `Modifier — ${editing.nom}` : 'Nouveau membre du staff'}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Nom complet *" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} placeholder="ex. Marc Villeneuve" required />
           <AInput label="Rôle / Poste *" value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="ex. Entraîneur principal" required />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Équipe encadrée" value={form.equipeNom} onChange={e => setForm({ ...form, equipeNom: e.target.value })} placeholder="ex. Nationale 1" />
           <AInput label="Depuis" value={form.depuis} onChange={e => setForm({ ...form, depuis: e.target.value })} placeholder="ex. Depuis 2018" />
         </div>
@@ -195,7 +195,7 @@ export default function StaffPage() {
           <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Ordre d'affichage" type="number" value={form.ordre} onChange={e => setForm({ ...form, ordre: e.target.value })} />
           <ASelect label="Statut" value={form.actif ? 'true' : 'false'} onChange={e => setForm({ ...form, actif: e.target.value === 'true' })} options={[{value:'true',label:'Actif'},{value:'false',label:'Inactif'}]} />
         </div>

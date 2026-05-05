@@ -150,7 +150,7 @@ export function PageHero({ badge, title, titleAccent, subtitle, cta, ctaHref, ct
         </svg>
       </div>
 
-      <div style={{ ...MAX_W, padding: '64px 28px 76px', position: 'relative', zIndex: 2, width: '100%' }}>
+      <div className="rsp-page-hero-inner" style={{ ...MAX_W, padding: '64px 28px 76px', position: 'relative', zIndex: 2, width: '100%' }}>
         {badge && (
           <div style={{ marginBottom: 14 }}>
             <Badge>{badge}</Badge>
@@ -204,7 +204,7 @@ export function CTABanner({ title, subtitle, btnLabel, btnHref, light }: {
   const clr = light ? C.navy          : '#fff'
   const sub = light ? C.muted         : 'rgba(255,255,255,0.70)'
   return (
-    <div style={{ background: bg, padding: SECTION_PAD, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+    <div className="rsp-section" style={{ background: bg, padding: SECTION_PAD, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
       <Image src="/assets/logo-principal.png" alt="" width={320} height={320}
         style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
           opacity: 0.04, filter: light ? 'none' : 'brightness(10)', pointerEvents: 'none' }} />
@@ -304,28 +304,31 @@ export function MatchCard({ date, day, time, home, away, competition, location }
   location?:   string
 }) {
   return (
-    <div style={{
-      background: '#fff', borderRadius: R.card, padding: '18px 22px',
-      boxShadow: SH.card, display: 'flex', gap: 18, alignItems: 'center',
+    <div className="match-card" style={{
+      background: '#fff', borderRadius: R.card, padding: '16px 20px',
+      boxShadow: SH.card, display: 'flex', gap: 16, alignItems: 'center',
     }}>
+      {/* Date block */}
       <div style={{
         background: C.navy, borderRadius: R.inner,
-        padding: '10px 13px', textAlign: 'center', minWidth: 56, flexShrink: 0,
+        padding: '10px 12px', textAlign: 'center', minWidth: 54, flexShrink: 0,
       }}>
         <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 22, color: '#fff', lineHeight: 1 }}>{date}</div>
         <div style={{ fontFamily: "'Barlow',sans-serif", fontWeight: 600, fontSize: 10, color: C.lightBlue, letterSpacing: 1, marginTop: 2 }}>{day}</div>
       </div>
+      {/* Match info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5, flexWrap: 'wrap' }}>
           <Badge>{competition}</Badge>
           {time && <span style={{ color: C.muted, fontSize: 12 }}>{time}</span>}
         </div>
-        <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 19, color: C.navy, marginBottom: 4 }}>
+        <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 'clamp(15px,2.5vw,19px)', color: C.navy, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {home} <span style={{ color: C.muted, fontWeight: 400 }}>–</span> {away}
         </div>
-        {location && <div style={{ color: C.muted, fontSize: 12.5 }}>📍 {location}</div>}
+        {location && <div style={{ color: C.muted, fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>📍 {location}</div>}
       </div>
-      <div style={{
+      {/* Time badge — hidden on very small screens */}
+      <div className="match-card-time-right" style={{
         flexShrink: 0, background: C.lightBluePale, color: C.navy,
         padding: '6px 12px', borderRadius: R.inner,
         fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15,

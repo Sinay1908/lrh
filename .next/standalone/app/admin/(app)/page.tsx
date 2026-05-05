@@ -98,7 +98,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, marginBottom: 20 }}>
+      <div className="rsp-admin-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, marginBottom: 20 }}>
 
         {/* ── Prochains matchs ── */}
         <ACard noPad>

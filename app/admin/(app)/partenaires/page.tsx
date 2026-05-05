@@ -80,7 +80,7 @@ export default function PartenairesPage() {
         <AInput label="Nom du partenaire" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Decathlon Pro" />
         <AInput label="URL du site" value={form.siteUrl} onChange={e => setForm({ ...form, siteUrl: e.target.value })} placeholder="https://…" />
         <AInput label="URL du logo" value={form.logoUrl} onChange={e => setForm({ ...form, logoUrl: e.target.value })} placeholder="https://…/logo.png" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-3col">
           <ASelect label="Niveau" value={form.niveau} onChange={e => setForm({ ...form, niveau: e.target.value })}
             options={[{value:'premium',label:'Premium'},{value:'partenaire',label:'Partenaire'},{value:'supporter',label:'Supporter'}]} />
           <AInput label="Ordre d'affichage" type="number" value={form.ordre} onChange={e => setForm({ ...form, ordre: e.target.value })} />

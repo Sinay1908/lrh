@@ -73,7 +73,7 @@ export default function CalendrierPage() {
       <PageHero badge="Saison 2024–2025" title="Calendrier &" titleAccent="Résultats"
         subtitle="Tous les matchs des Aigles de Lyon, compétition par compétition." />
 
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 28, borderBottom: `2px solid ${C.border}`, paddingBottom: 0 }}>
             {([['upcoming','Matchs à venir'],['results','Résultats']] as [string,string][]).map(([id, label]) => (

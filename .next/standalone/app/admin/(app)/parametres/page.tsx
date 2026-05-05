@@ -106,7 +106,7 @@ export default function ParametresPage() {
               <AInput label="Badge / étiquette" value={get('hero.badge')} onChange={e => set('hero.badge', e.target.value)} placeholder="ex. Saison 2024–25" />
               <AInput label="Titre principal" value={get('hero.title')} onChange={e => set('hero.title', e.target.value)} required />
               <AInput label="Sous-titre" value={get('hero.subtitle')} onChange={e => set('hero.subtitle', e.target.value)} rows={3} />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="rsp-form-2col">
                 <AInput label="Bouton principal (CTA)" value={get('hero.ctaPrimary')} onChange={e => set('hero.ctaPrimary', e.target.value)} />
                 <AInput label="Bouton secondaire"      value={get('hero.ctaSecondary')} onChange={e => set('hero.ctaSecondary', e.target.value)} />
               </div>
@@ -133,7 +133,7 @@ export default function ParametresPage() {
               <AInput label="Nom du gymnase / lieu"   value={get('contact.address')}  onChange={e => set('contact.address', e.target.value)} />
               <AInput label="Adresse"                 value={get('contact.street')}   onChange={e => set('contact.street', e.target.value)} />
               <AInput label="Ville / code postal"     value={get('contact.city')}     onChange={e => set('contact.city', e.target.value)} />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="rsp-form-2col">
                 <AInput label="Téléphone" value={get('contact.phone')} onChange={e => set('contact.phone', e.target.value)} />
                 <AInput label="Email" type="email" value={get('contact.email')} onChange={e => set('contact.email', e.target.value)} />
               </div>

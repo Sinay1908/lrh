@@ -49,7 +49,7 @@ export default function ClassementPage() {
     <div>
       <PageHero badge="Saison 2024–2025" title="Classement" titleAccent="General"
         subtitle="La position des Aigles de Lyon dans toutes les compétitions." />
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px 0', color: C.muted }}>Chargement…</div>

@@ -72,13 +72,13 @@ export default function BoutiquePage() {
           <AInput label="Nom du produit" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Maillot domicile 2024-25" />
           <AInput label="Prix (€)" type="number" value={form.prix} onChange={e => setForm({ ...form, prix: e.target.value })} required placeholder="ex. 65" />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <ASelect label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}
             options={['Maillot','Équipement','Accessoire','Textile','Protection'].map(v=>({value:v,label:v}))} />
           <AInput label="Badge (optionnel)" value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="ex. Nouveau, Promo…" />
         </div>
         <AInput label="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} placeholder="Description du produit…" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Ordre" type="number" value={form.ordre} onChange={e => setForm({ ...form, ordre: e.target.value })} />
           <ASelect label="Disponibilité" value={form.disponible ? 'true' : 'false'} onChange={e => setForm({ ...form, disponible: e.target.value === 'true' })} options={[{value:'true',label:'Disponible'},{value:'false',label:'Indisponible'}]} />
         </div>

@@ -77,7 +77,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div style={{
+        <div className="footer-bottom" style={{
           borderTop: '1px solid rgba(255,255,255,0.10)', paddingTop: 22,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           flexWrap: 'wrap', gap: 10,
@@ -85,7 +85,7 @@ export default function Footer() {
           <span style={{ color: 'rgba(255,255,255,0.38)', fontSize: 12.5 }}>
             © {new Date().getFullYear()} Lyon Roller Hockey — Tous droits réservés
           </span>
-          <div style={{ display: 'flex', gap: 18 }}>
+          <div className="footer-legal" style={{ display: 'flex', gap: 18 }}>
             {['Mentions légales', 'CGU', 'Confidentialité'].map(l => (
               <span key={l} style={{ color: 'rgba(255,255,255,0.32)', fontSize: 12, cursor: 'pointer' }}>{l}</span>
             ))}

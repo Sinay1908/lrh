@@ -93,22 +93,22 @@ export default function EquipesPage() {
       )}
 
       <Modal open={!!modal} onClose={() => { setModal(null); setError(null) }} title={modal === 'create' ? 'Nouvelle équipe' : `Modifier — ${editing?.nom}`}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Nom de l'équipe" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Nationale 1" />
           <AInput label="Niveau" value={form.niveau} onChange={e => setForm({ ...form, niveau: e.target.value })} placeholder="ex. Nat. 1" />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <ASelect label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}
             options={[{value:'Senior',label:'Senior'},{value:'Jeunes',label:'Jeunes'},{value:'Loisir',label:'Loisir'}]} />
           <ASelect label="Groupe" value={form.groupe} onChange={e => setForm({ ...form, groupe: e.target.value })}
             options={[{value:'senior',label:'Senior'},{value:'jeunes',label:'Jeunes'},{value:'loisir',label:'Loisir'}]} />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Coach" value={form.coach} onChange={e => setForm({ ...form, coach: e.target.value })} placeholder="Nom du coach" />
           <AInput label="Nb joueurs" type="number" value={form.nbJoueurs} onChange={e => setForm({ ...form, nbJoueurs: e.target.value })} />
         </div>
         <AInput label="Horaires d'entraînement" value={form.horaire} onChange={e => setForm({ ...form, horaire: e.target.value })} placeholder="ex. Mardi & Jeudi 19h–21h" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <div>
             <label style={{ fontSize: 12.5, fontWeight: 600, color: A.textSec, display: 'block', marginBottom: 5 }}>Couleur</label>
             <input type="color" value={form.couleur} onChange={e => setForm({ ...form, couleur: e.target.value })}

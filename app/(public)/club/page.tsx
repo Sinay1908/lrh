@@ -11,7 +11,7 @@ function ValueCard({ icon, title, desc }: { icon: string; title: string; desc: s
   const [hov, setHov] = useState(false)
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: '#fff', borderRadius: R.card, padding: '32px 26px', textAlign: 'center', transition: 'all 0.22s', boxShadow: hov ? SH.cardHover : SH.card, transform: hov ? 'translateY(-4px)' : 'none', borderBottom: `3px solid ${hov ? C.red : 'transparent'}` }}>
+      style={{ background: '#fff', borderRadius: R.card, padding: '28px 22px', textAlign: 'center', transition: 'all 0.22s', boxShadow: hov ? SH.cardHover : SH.card, transform: hov ? 'translateY(-4px)' : 'none', borderBottom: `3px solid ${hov ? C.red : 'transparent'}` }}>
       <div style={{ fontSize: 34, marginBottom: 14 }}>{icon}</div>
       <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 20, color: C.navy, marginBottom: 10, textTransform: 'uppercase' }}>{title}</div>
       <p style={{ color: C.muted, fontSize: 14, lineHeight: 1.7, margin: 0 }}>{desc}</p>
@@ -54,31 +54,32 @@ function TimelineItem({ annee, titre, competition, description, align, dot }: {
   const dotColor = dot === 'red' ? C.red : C.navy
   const bgColor  = dot === 'red' ? C.red : C.navy
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 48px 1fr', gap: 0, marginBottom: 36 }}>
+    /* className="timeline-item" → CSS makes it 1-col on mobile */
+    <div className="timeline-item" style={{ display: 'grid', gridTemplateColumns: '1fr 48px 1fr', gap: 0, marginBottom: 36 }}>
       {align === 'left' ? (
         <>
-          <div style={{ paddingRight: 28, textAlign: 'right' }}>
+          <div className="timeline-content" style={{ paddingRight: 28, textAlign: 'right' }}>
             <div style={{ display: 'inline-block', background: bgColor, color: '#fff', padding: '3px 12px', borderRadius: R.badge, marginBottom: 8, fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 16 }}>{annee}</div>
             <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 17, color: C.navy, marginBottom: 3 }}>{titre}</div>
             <div style={{ fontSize: 12, color: C.red, fontWeight: 600, marginBottom: 4 }}>{competition}</div>
             {description && <p style={{ color: C.muted, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{description}</p>}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="timeline-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ width: 2, flex: 1, background: C.border }} />
             <div style={{ width: 14, height: 14, borderRadius: '50%', flexShrink: 0, background: dotColor, border: '3px solid #fff', boxShadow: `0 0 0 2px ${dotColor}` }} />
             <div style={{ width: 2, flex: 1, background: C.border }} />
           </div>
-          <div />
+          <div className="timeline-empty" />
         </>
       ) : (
         <>
-          <div />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="timeline-empty" />
+          <div className="timeline-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ width: 2, flex: 1, background: C.border }} />
             <div style={{ width: 14, height: 14, borderRadius: '50%', flexShrink: 0, background: C.navy, border: '3px solid #fff', boxShadow: `0 0 0 2px ${C.navy}` }} />
             <div style={{ width: 2, flex: 1, background: C.border }} />
           </div>
-          <div style={{ paddingLeft: 28 }}>
+          <div className="timeline-content" style={{ paddingLeft: 28 }}>
             <div style={{ display: 'inline-block', background: bgColor, color: '#fff', padding: '3px 12px', borderRadius: R.badge, marginBottom: 8, fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 16 }}>{annee}</div>
             <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 17, color: C.navy, marginBottom: 3 }}>{titre}</div>
             <div style={{ fontSize: 12, color: C.red, fontWeight: 600, marginBottom: 4 }}>{competition}</div>
@@ -119,37 +120,40 @@ export default function ClubPage() {
         cta="Nous rejoindre" ctaHref="/inscription"
         ctaSecondary="Nous contacter" ctaSecondaryHref="/contact" />
 
-      {/* ── INTRO ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
-        <div style={{ ...MAX_W, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
-          <div>
-            <SectionHeader label="Notre identité" title="Les Aigles de Lyon" />
-            <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 18 }}>
-              Lyon Roller Hockey est l&apos;un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l&apos;appartenance à une vraie communauté sportive.
-            </p>
-            <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 28 }}>
-              Aujourd&apos;hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.
-            </p>
-            <Btn onClick={() => window.location.href = '/inscription'}>Rejoindre le club</Btn>
-          </div>
-          <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, borderRadius: 16, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-            <Image src="/assets/mascotte.png" alt="Mascotte Lyon RH" width={200} height={200}
-              style={{ height: '78%', width: 'auto', opacity: 0.30, objectFit: 'contain' }} />
-            <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(13,33,80,0.75)', borderRadius: R.inner, padding: '10px 14px', textAlign: 'center', fontFamily: "'Barlow',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>
-              Photo de l&apos;équipe — saison 2024-2025
+      {/* ── INTRO — 2 cols desktop, 1 col mobile ── */}
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
+        <div style={{ ...MAX_W }}>
+          {/* className="rsp-2col" → 1fr 1fr on desktop, 1fr on mobile */}
+          <div className="rsp-2col">
+            <div>
+              <SectionHeader label="Notre identité" title="Les Aigles de Lyon" />
+              <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 18 }}>
+                Lyon Roller Hockey est l&apos;un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l&apos;appartenance à une vraie communauté sportive.
+              </p>
+              <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 28 }}>
+                Aujourd&apos;hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.
+              </p>
+              <Btn onClick={() => window.location.href = '/inscription'}>Rejoindre le club</Btn>
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, borderRadius: 16, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+              <Image src="/assets/mascotte.png" alt="Mascotte Lyon RH" width={200} height={200}
+                style={{ height: '78%', width: 'auto', opacity: 0.30, objectFit: 'contain' }} />
+              <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(13,33,80,0.75)', borderRadius: R.inner, padding: '10px 14px', textAlign: 'center', fontFamily: "'Barlow',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>
+                Photo de l&apos;équipe — saison 2024-2025
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── STATS ── */}
-      <div style={{ background: C.navy, padding: SECTION_PAD_SM }}>
+      <div style={{ background: C.navy, padding: SECTION_PAD_SM }} className="rsp-section-sm">
         <div style={{ ...MAX_W }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 0, borderRadius: R.card, overflow: 'hidden' }}>
+          <div className="stats-bar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(130px,1fr))', gap: 0, borderRadius: R.card, overflow: 'hidden' }}>
             {[["50+", "Ans d'existence"], ['180+', 'Licenciés actifs'], ['7', 'Équipes'],
               ['12', 'Titres nationaux'], ['3', "Terrains d'entraînement"], ['1974', 'Fondation']
             ].map(([n, l], i) => (
-              <div key={l} style={{ borderRight: i < 5 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+              <div key={l} className="stats-bar-divider" style={{ borderRight: i < 5 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
                 <StatBlock number={n} label={l} dark />
               </div>
             ))}
@@ -157,8 +161,8 @@ export default function ClubPage() {
         </div>
       </div>
 
-      {/* ── PARCOURS / PALMARÈS ── */}
-      <div style={{ background: '#fff', padding: SECTION_PAD }}>
+      {/* ── PALMARÈS ── */}
+      <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Notre parcours" title="Notre Palmarès" center
             subtitle="Les grandes étapes qui ont forgé l'identité des Aigles de Lyon." />
@@ -177,23 +181,23 @@ export default function ClubPage() {
       </div>
 
       {/* ── VALEURS ── */}
-      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }}>
+      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Ce qui nous unit" title="Nos Valeurs" center />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 18 }}>
             {VALUES.map(v => <ValueCard key={v.title} icon={v.icon} title={v.title} desc={v.desc} />)}
           </div>
         </div>
       </div>
 
       {/* ── STAFF ── */}
-      <div style={{ background: '#fff', padding: SECTION_PAD }}>
+      <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Encadrement" title="Notre Staff Technique" center />
           {staff.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 0', color: C.muted }}>Le staff sera présenté prochainement.</div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 18 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 18 }}>
               {staff.map(s => <StaffCard key={s.id} s={s} />)}
             </div>
           )}

@@ -72,7 +72,7 @@ export default function BoutiquePage() {
 
       {/* ── PRODUIT VEDETTE ── */}
       {!loading && vedette && (
-        <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+        <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
           <div style={{ ...MAX_W }}>
             <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: SH.card, display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
               <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, minHeight: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: 40 }}>
@@ -132,7 +132,7 @@ export default function BoutiquePage() {
       </div>
 
       {/* ── COMMENT COMMANDER ── */}
-      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }}>
+      <div style={{ background: C.lightBluePale, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Informations" title="Comment commander ?" center />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 18, maxWidth: 860, margin: '0 auto' }}>

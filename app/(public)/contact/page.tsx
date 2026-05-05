@@ -90,7 +90,7 @@ export default function ContactPage() {
         cta="S'inscrire au club" ctaHref="/inscription" />
 
       {/* ── INFO CARDS ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 16 }}>
             {INFOS.map(info => <InfoCard key={info.label} icon={info.icon} label={info.label} lines={info.lines} />)}
@@ -99,8 +99,8 @@ export default function ContactPage() {
       </div>
 
       {/* ── MAP + FORM ── */}
-      <div style={{ background: '#fff', padding: SECTION_PAD }}>
-        <div style={{ ...MAX_W, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56 }}>
+      <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
+        <div className="rsp-2col" style={{ ...MAX_W }}>
 
           {/* Map placeholder */}
           <div>
@@ -142,7 +142,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ background: C.offWhite, borderRadius: R.card, padding: '32px 28px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                <div className="rsp-form-2col">
                   {([['nom', 'Nom complet *'], ['email', 'Email *']] as [keyof typeof form, string][]).map(([k, l]) => (
                     <div key={k}>
                       <label style={labelStyle}>{l}</label>
@@ -171,7 +171,7 @@ export default function ContactPage() {
       </div>
 
       {/* ── FAQ ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD }}>
+      <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <SectionHeader label="Questions fréquentes" title="FAQ" center />
           {FAQS.map((faq, i) => (

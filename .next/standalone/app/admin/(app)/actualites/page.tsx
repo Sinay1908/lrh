@@ -206,7 +206,7 @@ export default function ActualitesPage() {
           onChange={e => setForm({ ...form, titre: e.target.value })}
           placeholder="Titre de l'article" required />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <ASelect label="Catégorie" value={form.categorie}
             onChange={e => setForm({ ...form, categorie: e.target.value })}
             options={[{value:'',label:'Choisir...'},{value:'Résultat',label:'Résultat'},{value:'Recrutement',label:'Recrutement'},{value:'Compétition',label:'Compétition'},{value:'Club',label:'Club'},{value:'Formation',label:'Formation'},{value:'Inscription',label:'Inscription'}]} />

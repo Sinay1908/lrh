@@ -122,16 +122,16 @@ export default function MatchsPage() {
       </ACard>
 
       <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier le match' : 'Ajouter un match'} width={560}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Date" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required />
           <AInput label="Horaire" value={form.heure} onChange={e => setForm({ ...form, heure: e.target.value })} placeholder="15h00" />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <AInput label="Adversaire" value={form.adversaire} onChange={e => setForm({ ...form, adversaire: e.target.value })} required placeholder="ex. Grenoble RH" />
           <ASelect label="Domicile / Extérieur" value={form.domicile} onChange={e => setForm({ ...form, domicile: e.target.value })}
             options={[{value:'true',label:'Domicile (Lyon reçoit)'},{value:'false',label:'Extérieur (Lyon déplace)'}]} />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rsp-form-2col">
           <ASelect label="Compétition" value={form.competition} onChange={e => setForm({ ...form, competition: e.target.value })}
             options={['Nationale 1','Régionale 1','Régionale 2','U17','U14','U11','Loisir','Playoffs','Coupe de France'].map(v => ({value:v,label:v}))} />
           <ASelect label="Statut" value={form.statut} onChange={e => setForm({ ...form, statut: e.target.value })}
@@ -139,7 +139,7 @@ export default function MatchsPage() {
         </div>
         <AInput label="Lieu" value={form.lieu} onChange={e => setForm({ ...form, lieu: e.target.value })} placeholder="Gymnase Vieux-Lyon" />
         {form.statut !== 'upcoming' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="rsp-form-2col">
             <AInput label="Score Lyon" type="number" value={form.scoreDom} onChange={e => setForm({ ...form, scoreDom: e.target.value })} placeholder="0" />
             <AInput label="Score adversaire" type="number" value={form.scoreExt} onChange={e => setForm({ ...form, scoreExt: e.target.value })} placeholder="0" />
           </div>
