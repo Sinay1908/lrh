@@ -13,10 +13,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { nom, role, depuis, equipeNom, description, actif, ordre } = body
+    const { nom, role, depuis, equipeNom, description, photoUrl, actif, ordre } = body
     if (!nom || !role) return NextResponse.json({ error: 'Nom et rôle requis' }, { status: 400 })
     const membre = await prisma.staffMembre.create({
-      data: { nom, role, depuis, equipeNom, description, actif: actif ?? true, ordre: ordre || 0 },
+      data: { nom, role, depuis, equipeNom, description, photoUrl: photoUrl || null, actif: actif ?? true, ordre: ordre || 0 },
     })
     return NextResponse.json(membre, { status: 201 })
   } catch {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { C, R, SH, SECTION_PAD, SECTION_PAD_SM, MAX_W, SectionHeader, CTABanner, PageHero, StatBlock, Btn } from '@/components/public/ui'
 
-interface StaffMembre { id: number; nom: string; role: string; depuis: string | null; equipeNom: string | null; description: string | null; actif: boolean; ordre: number }
+interface StaffMembre { id: number; nom: string; role: string; depuis: string | null; equipeNom: string | null; description: string | null; photoUrl: string | null; actif: boolean; ordre: number }
 interface PalmaresItem { id: number; annee: string; titre: string; competition: string; description: string | null; ordre: number }
 
 function ValueCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
@@ -25,10 +25,18 @@ function StaffCard({ s }: { s: StaffMembre }) {
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{ background: '#fff', borderRadius: R.card, overflow: 'hidden', boxShadow: hov ? SH.cardHover : SH.card, transition: 'all 0.22s', transform: hov ? 'translateY(-3px)' : 'none' }}>
-      <div style={{ height: 130, background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'rgba(168,214,232,0.18)', border: '2px solid rgba(168,214,232,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 22, color: C.lightBlue, letterSpacing: 1 }}>
-          {initials}
-        </div>
+      <div style={{ height: 140, background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {s.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={s.photoUrl} alt={s.nom}
+            style={{ width: 90, height: 90, borderRadius: '50%', objectFit: 'cover',
+              border: '3px solid rgba(168,214,232,0.5)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.35)' }} />
+        ) : (
+          <div style={{ width: 90, height: 90, borderRadius: '50%', background: 'rgba(168,214,232,0.18)', border: '2px solid rgba(168,214,232,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 28, color: C.lightBlue, letterSpacing: 1 }}>
+            {initials}
+          </div>
+        )}
       </div>
       <div style={{ padding: '16px 18px' }}>
         <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 18, color: C.navy, lineHeight: 1.2 }}>{s.nom}</div>
