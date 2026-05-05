@@ -18,11 +18,11 @@ export interface HeroParams {
   ctaSecondary: string
 }
 
-function HeroStatCard({ number, label }: { number: string; label: string }) {
+function StatItem({ number, label }: { number: string; label: string }) {
   return (
-    <div style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(8px)', padding: '18px 14px', textAlign: 'center', borderRadius: R.card, border: '1px solid rgba(168,214,232,0.12)' }}>
-      <div style={{ color: C.lightBlue, fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 30, lineHeight: 1 }}>{number}</div>
-      <div style={{ color: 'rgba(255,255,255,0.52)', fontSize: 11, marginTop: 4, fontFamily: "'Barlow',sans-serif", fontWeight: 500 }}>{label}</div>
+    <div className="stats-bar-divider" style={{ textAlign: 'center', padding: '28px 16px', borderRight: `1px solid ${C.border}` }}>
+      <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 38, color: C.red, lineHeight: 1 }}>{number}</div>
+      <div style={{ color: C.muted, fontSize: 12.5, marginTop: 5, fontFamily: "'Barlow',sans-serif", fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
     </div>
   )
 }
@@ -73,32 +73,27 @@ export default function HomePageClient({ hero, sponsors }: { hero: HeroParams; s
 
         <div style={{ ...MAX_W, padding: '80px 28px 110px', position: 'relative', zIndex: 2, width: '100%' }}
           className="rsp-page-hero-inner">
-          <div className="rsp-hero-grid">
-            <div style={{ maxWidth: 620 }}>
+            <div style={{ maxWidth: 680 }}>
               <div style={{ marginBottom: 22 }}><Badge>{hero.badge}</Badge></div>
               <h1 style={{ color: '#fff', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 'clamp(40px,7vw,90px)', textTransform: 'uppercase', margin: 0, lineHeight: 0.93, letterSpacing: 0.5 }}>
                 {hero.title}
               </h1>
-              <p style={{ color: 'rgba(255,255,255,0.66)', fontSize: 'clamp(14px,2vw,17px)', margin: '22px 0 28px', lineHeight: 1.7, maxWidth: 500 }}>
+              <p style={{ color: 'rgba(255,255,255,0.66)', fontSize: 'clamp(14px,2vw,17px)', margin: '22px 0 28px', lineHeight: 1.7, maxWidth: 560 }}>
                 {hero.subtitle}
               </p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                 <Btn size="lg" onClick={() => window.location.href = '/inscription'}>{hero.ctaPrimary}</Btn>
                 <Btn variant="ghost" size="lg" onClick={() => window.location.href = '/club'}>{hero.ctaSecondary} →</Btn>
               </div>
-
-              {/* Stats row — mobile only */}
-              <div className="rsp-hero-stats-mobile"
-                style={{ gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginTop: 28 }}>
-                {HERO_STATS.map(([n, l]) => <HeroStatCard key={l} number={n} label={l} />)}
-              </div>
             </div>
+        </div>
+      </div>
 
-            {/* Stats grid — desktop only */}
-            <div className="rsp-hero-stats-desktop"
-              style={{ gridTemplateColumns: '1fr 1fr', gap: 3, flexShrink: 0 }}>
-              {HERO_STATS.map(([n, l]) => <HeroStatCard key={l} number={n} label={l} />)}
-            </div>
+      {/* ── STATS STRIP ── */}
+      <div style={{ background: '#fff', borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ ...MAX_W, padding: '0 28px' }}>
+          <div className="stats-bar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+            {HERO_STATS.map(([n, l]) => <StatItem key={l} number={n} label={l} />)}
           </div>
         </div>
       </div>
