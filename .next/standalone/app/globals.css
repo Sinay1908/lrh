@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-navy:             #0D2150;
+  --color-navy-light:       #162B65;
+  --color-lrh-red:          #D42B2B;
+  --color-red-hover:        #B52323;
+  --color-light-blue:       #A8D6E8;
+  --color-light-blue-pale:  #EDF4F8;
+  --color-off-white:        #F7F9FB;
+  --color-muted:            #5A6B8A;
+  --color-border:           #D8E4ED;
+
+  /* Admin colors */
+  --color-admin-bg:         #F4F6F9;
+  --color-admin-border:     #E2E8F0;
+  --color-admin-muted:      #64748B;
+  --color-admin-text:       #475569;
+  --color-admin-green:      #16A34A;
+  --color-admin-amber:      #D97706;
+  --color-admin-blue:       #2563EB;
+  --color-admin-purple:     #7C3AED;
+
+  /* Fonts */
+  --font-condensed: 'Barlow Condensed', sans-serif;
+  --font-sans: 'Barlow', sans-serif;
+
+  /* Border radius */
+  --radius-card:  12px;
+  --radius-btn:   8px;
+  --radius-badge: 4px;
+  --radius-inner: 6px;
+
+  /* Shadows */
+  --shadow-card:       0 2px 10px rgba(13,33,80,0.07);
+  --shadow-card-hover: 0 8px 28px rgba(13,33,80,0.14);
+  --shadow-nav:        0 2px 20px rgba(0,0,0,0.22);
+  --shadow-modal:      0 16px 48px rgba(0,0,0,0.22);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color: #F7F9FB;
+  color: #0D2150;
+}
+
+/* Nav responsive breakpoint */
+@media (max-width: 960px) {
+  .nav-desktop  { display: none !important; }
+  .nav-cta-desk { display: none !important; }
+  .nav-ham      { display: flex !important; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeInUp 0.22s ease forwards; }

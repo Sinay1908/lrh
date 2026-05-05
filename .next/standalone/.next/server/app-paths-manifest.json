@@ -10,6 +10,7 @@
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/admin/(app)/actualites/page": "app/admin/(app)/actualites/page.js",
+  "/admin/(app)/administration/page": "app/admin/(app)/administration/page.js",
   "/admin/(app)/boutique/page": "app/admin/(app)/boutique/page.js",
   "/admin/(app)/classement/page": "app/admin/(app)/classement/page.js",
   "/admin/(app)/equipes/page": "app/admin/(app)/equipes/page.js",
@@ -23,6 +24,8 @@
   "/admin/(app)/staff/page": "app/admin/(app)/staff/page.js",
   "/admin/(app)/tarifs/page": "app/admin/(app)/tarifs/page.js",
   "/admin/login/page": "app/admin/login/page.js",
+  "/api/admins/[id]/route": "app/api/admins/[id]/route.js",
+  "/api/admins/route": "app/api/admins/route.js",
   "/api/articles/[id]/route": "app/api/articles/[id]/route.js",
   "/api/articles/route": "app/api/articles/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
@@ -33,6 +36,7 @@
   "/api/dashboard/route": "app/api/dashboard/route.js",
   "/api/equipes/[id]/route": "app/api/equipes/[id]/route.js",
   "/api/equipes/route": "app/api/equipes/route.js",
+  "/api/files/[name]/route": "app/api/files/[name]/route.js",
   "/api/inscriptions/[id]/route": "app/api/inscriptions/[id]/route.js",
   "/api/inscriptions/route": "app/api/inscriptions/route.js",
   "/api/matchs/[id]/route": "app/api/matchs/[id]/route.js",
@@ -48,5 +52,6 @@
   "/api/staff/route": "app/api/staff/route.js",
   "/api/tarifs/[id]/route": "app/api/tarifs/[id]/route.js",
   "/api/tarifs/route": "app/api/tarifs/route.js",
+  "/api/upload/route": "app/api/upload/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js"
 }

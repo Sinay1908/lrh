@@ -12,5 +12,5 @@ R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-e
 R.c("server/chunks/ssr/app_admin_layout_tsx_0yjsw7q._.js")
 R.c("server/chunks/ssr/app_admin_(app)_layout_tsx_13gv~79._.js")
 R.c("server/chunks/ssr/_next-internal_server_app_admin_(app)_page_actions_0uyjek_.js")
-R.m(53512)
-module.exports=R.m(53512).exports
+R.m(753512)
+module.exports=R.m(753512).exports

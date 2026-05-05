@@ -10,6 +10,7 @@
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
   "/admin/(app)/actualites/page": "/admin/actualites",
+  "/admin/(app)/administration/page": "/admin/administration",
   "/admin/(app)/boutique/page": "/admin/boutique",
   "/admin/(app)/classement/page": "/admin/classement",
   "/admin/(app)/equipes/page": "/admin/equipes",
@@ -23,6 +24,8 @@
   "/admin/(app)/staff/page": "/admin/staff",
   "/admin/(app)/tarifs/page": "/admin/tarifs",
   "/admin/login/page": "/admin/login",
+  "/api/admins/[id]/route": "/api/admins/[id]",
+  "/api/admins/route": "/api/admins",
   "/api/articles/[id]/route": "/api/articles/[id]",
   "/api/articles/route": "/api/articles",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
@@ -33,6 +36,7 @@
   "/api/dashboard/route": "/api/dashboard",
   "/api/equipes/[id]/route": "/api/equipes/[id]",
   "/api/equipes/route": "/api/equipes",
+  "/api/files/[name]/route": "/api/files/[name]",
   "/api/inscriptions/[id]/route": "/api/inscriptions/[id]",
   "/api/inscriptions/route": "/api/inscriptions",
   "/api/matchs/[id]/route": "/api/matchs/[id]",
@@ -48,5 +52,6 @@
   "/api/staff/route": "/api/staff",
   "/api/tarifs/[id]/route": "/api/tarifs/[id]",
   "/api/tarifs/route": "/api/tarifs",
+  "/api/upload/route": "/api/upload",
   "/favicon.ico/route": "/favicon.ico"
 }

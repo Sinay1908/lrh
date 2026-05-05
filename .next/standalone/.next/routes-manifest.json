@@ -23,6 +23,14 @@
   },
   "dynamicRoutes": [
     {
+      "page": "/api/admins/[id]",
+      "regex": "^/api/admins/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admins/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/api/articles/[id]",
       "regex": "^/api/articles/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -61,6 +69,14 @@
         "nxtPid": "nxtPid"
       },
       "namedRegex": "^/api/equipes/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/files/[name]",
+      "regex": "^/api/files/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPname": "nxtPname"
+      },
+      "namedRegex": "^/api/files/(?<nxtPname>[^/]+?)(?:/)?$"
     },
     {
       "page": "/api/inscriptions/[id]",
@@ -151,6 +167,12 @@
       "namedRegex": "^/admin/actualites(?:/)?$"
     },
     {
+      "page": "/admin/administration",
+      "regex": "^/admin/administration(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/administration(?:/)?$"
+    },
+    {
       "page": "/admin/boutique",
       "regex": "^/admin/boutique(?:/)?$",
       "routeKeys": {},
@@ -221,6 +243,12 @@
       "regex": "^/admin/tarifs(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/admin/tarifs(?:/)?$"
+    },
+    {
+      "page": "/api/admins",
+      "regex": "^/api/admins(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admins(?:/)?$"
     },
     {
       "page": "/api/articles",
@@ -299,6 +327,12 @@
       "regex": "^/api/tarifs(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/tarifs(?:/)?$"
+    },
+    {
+      "page": "/api/upload",
+      "regex": "^/api/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/upload(?:/)?$"
     },
     {
       "page": "/boutique",

@@ -11,5 +11,5 @@ R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthor
 R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0lgvd_..js")
 R.c("server/chunks/ssr/app_(public)_layout_tsx_01gwiv9._.js")
 R.c("server/chunks/ssr/_next-internal_server_app_(public)_classement_page_actions_02ozy4h.js")
-R.m(28920)
-module.exports=R.m(28920).exports
+R.m(928920)
+module.exports=R.m(928920).exports
