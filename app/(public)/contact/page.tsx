@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { C, R, SH, SECTION_PAD, MAX_W, Btn, SectionHeader, CTABanner, PageHero } from '@/components/public/ui'
 
 function InfoCard({ icon, label, lines }: { icon: string; label: string; lines: string[] }) {
@@ -34,12 +34,15 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
   )
 }
 
-const INFOS = [
-  { icon: '📍', label: 'Adresse',     lines: ['Gymnase du Vieux-Lyon', '12 rue de la Patinoire', '69005 Lyon'] },
-  { icon: '📞', label: 'Téléphone',   lines: ['04 72 00 00 00', 'Lundi – Vendredi, 9h – 18h'] },
-  { icon: '✉️', label: 'Email',       lines: ['contact@lyonrollerhockey.fr', 'Réponse sous 48h ouvrées'] },
-  { icon: '🕐', label: 'Secrétariat', lines: ['Mar & Jeu : 18h – 21h', 'Samedi : 9h – 12h'] },
-]
+// Valeurs par défaut des infos de contact
+const CONTACT_DEFAULTS = {
+  address:  'Gymnase du Vieux-Lyon',
+  street:   '12 rue de la Patinoire',
+  city:     '69005 Lyon',
+  phone:    '04 72 00 00 00',
+  email:    'contact@lyonrollerhockey.fr',
+  schedule: 'Mar & Jeu 18h – 21h · Sam 9h – 12h',
+}
 
 const FAQS = [
   { q: "Peut-on venir essayer une séance avant de s'inscrire ?",  a: "Oui, absolument ! Nous proposons une séance d'essai gratuite et sans engagement pour toutes les catégories." },
@@ -61,10 +64,28 @@ const labelStyle: React.CSSProperties = {
 }
 
 export default function ContactPage() {
-  const [form, setForm]      = useState({ nom: '', email: '', sujet: '', message: '' })
-  const [sent, setSent]      = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [form, setForm]         = useState({ nom: '', email: '', sujet: '', message: '' })
+  const [sent, setSent]         = useState(false)
+  const [loading, setLoading]   = useState(false)
+  const [openFaq, setOpenFaq]   = useState<number | null>(null)
+  const [contact, setContact]   = useState(CONTACT_DEFAULTS)
+
+  // Charger les infos de contact depuis la DB
+  useEffect(() => {
+    fetch('/api/parametres?section=contact')
+      .then(r => r.json())
+      .then((d: Record<string, string>) => {
+        setContact(prev => ({
+          address:  d['contact.address']  || prev.address,
+          street:   d['contact.street']   || prev.street,
+          city:     d['contact.city']     || prev.city,
+          phone:    d['contact.phone']    || prev.phone,
+          email:    d['contact.email']    || prev.email,
+          schedule: d['contact.schedule'] || prev.schedule,
+        }))
+      })
+      .catch(() => {})
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,11 +110,14 @@ export default function ContactPage() {
         subtitle="Une question, une demande d'inscription ou un partenariat ? Notre équipe vous répond dans les 48 heures."
         cta="S'inscrire au club" ctaHref="/inscription" />
 
-      {/* ── INFO CARDS ── */}
+      {/* ── INFO CARDS — dynamique depuis les paramètres admin ── */}
       <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 16 }}>
-            {INFOS.map(info => <InfoCard key={info.label} icon={info.icon} label={info.label} lines={info.lines} />)}
+            <InfoCard icon="📍" label="Adresse"     lines={[contact.address, `${contact.street}`, contact.city]} />
+            <InfoCard icon="📞" label="Téléphone"   lines={[contact.phone, 'Lundi – Vendredi, 9h – 18h']} />
+            <InfoCard icon="✉️" label="Email"       lines={[contact.email, 'Réponse sous 48h ouvrées']} />
+            <InfoCard icon="🕐" label="Secrétariat" lines={contact.schedule.split('·').map(s => s.trim())} />
           </div>
         </div>
       </div>
@@ -112,7 +136,7 @@ export default function ContactPage() {
               </svg>
               <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
                 <div style={{ width: 44, height: 44, borderRadius: '50% 50% 50% 0', background: C.red, transform: 'rotate(-45deg)', margin: '0 auto 6px', boxShadow: '0 4px 14px rgba(212,43,43,0.45)' }} />
-                <div style={{ background: 'rgba(13,33,80,0.82)', color: '#fff', padding: '6px 14px', borderRadius: R.inner, marginTop: 6, fontFamily: "'Barlow',sans-serif", fontSize: 12, fontWeight: 600 }}>Gymnase du Vieux-Lyon</div>
+                <div style={{ background: 'rgba(13,33,80,0.82)', color: '#fff', padding: '6px 14px', borderRadius: R.inner, marginTop: 6, fontFamily: "'Barlow',sans-serif", fontSize: 12, fontWeight: 600 }}>{contact.address}</div>
               </div>
             </div>
             <div style={{ background: C.offWhite, borderRadius: R.card, padding: '18px 20px' }}>

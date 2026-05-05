@@ -35,15 +35,35 @@ function fmtDate(dateStr: string) {
   return { date: d.getDate().toString().padStart(2,'0'), day: d.toLocaleDateString('fr-FR',{month:'short'}).toUpperCase().replace('.','') }
 }
 
+// Valeurs par défaut du hero (utilisées si les params DB ne sont pas encore définis)
+const HERO_DEFAULTS = {
+  badge:        'Saison 2024 – 2025',
+  title:        'La Passion du Roller Hockey',
+  subtitle:     "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
+  ctaPrimary:   'Nous rejoindre',
+  ctaSecondary: 'Découvrir le club',
+}
+
 export default function HomePage() {
   const [matchs, setMatchs]   = useState<DbMatch[]>([])
   const [articles, setArticles] = useState<DbArticle[]>([])
   const [equipes, setEquipes] = useState<DbEquipe[]>([])
+  const [hero, setHero]       = useState(HERO_DEFAULTS)
 
   useEffect(() => {
     fetch('/api/matchs?statut=upcoming').then(r=>r.json()).then(data => setMatchs(Array.isArray(data) ? data.slice(0,3) : [])).catch(()=>{})
     fetch('/api/articles?statut=published').then(r=>r.json()).then(data => setArticles(Array.isArray(data) ? data.slice(0,3) : [])).catch(()=>{})
     fetch('/api/equipes').then(r=>r.json()).then(data => setEquipes(Array.isArray(data) ? data.filter((e: DbEquipe) => e) : [])).catch(()=>{})
+    // Charger les paramètres du hero depuis la DB
+    fetch('/api/parametres?section=hero').then(r => r.json()).then((d: Record<string,string>) => {
+      setHero(prev => ({
+        badge:        d['hero.badge']        || prev.badge,
+        title:        d['hero.title']        || prev.title,
+        subtitle:     d['hero.subtitle']     || prev.subtitle,
+        ctaPrimary:   d['hero.ctaPrimary']   || prev.ctaPrimary,
+        ctaSecondary: d['hero.ctaSecondary'] || prev.ctaSecondary,
+      }))
+    }).catch(()=>{})
   }, [])
 
   return (
@@ -66,18 +86,18 @@ export default function HomePage() {
           className="rsp-page-hero-inner">
           {/* Desktop: text left + stats right. Mobile: stacked */}
           <div className="rsp-hero-grid">
-            {/* Text */}
+            {/* Text — dynamique depuis les paramètres admin */}
             <div style={{ maxWidth: 620 }}>
-              <div style={{ marginBottom: 22 }}><Badge>Saison 2024 – 2025</Badge></div>
+              <div style={{ marginBottom: 22 }}><Badge>{hero.badge}</Badge></div>
               <h1 style={{ color: '#fff', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 'clamp(40px,7vw,90px)', textTransform: 'uppercase', margin: 0, lineHeight: 0.93, letterSpacing: 0.5 }}>
-                LA PASSION<br /><span style={{ color: C.lightBlue }}>DU ROLLER</span><br />HOCKEY
+                {hero.title}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.66)', fontSize: 'clamp(14px,2vw,17px)', margin: '22px 0 28px', lineHeight: 1.7, maxWidth: 500 }}>
-                Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.
+                {hero.subtitle}
               </p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <Btn size="lg" onClick={() => window.location.href = '/inscription'}>Nous rejoindre</Btn>
-                <Btn variant="ghost" size="lg" onClick={() => window.location.href = '/club'}>Découvrir le club →</Btn>
+                <Btn size="lg" onClick={() => window.location.href = '/inscription'}>{hero.ctaPrimary}</Btn>
+                <Btn variant="ghost" size="lg" onClick={() => window.location.href = '/club'}>{hero.ctaSecondary} →</Btn>
               </div>
 
               {/* Stats row — visible only on mobile (hidden on desktop via CSS) */}

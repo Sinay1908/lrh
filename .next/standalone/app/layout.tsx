@@ -1,17 +1,40 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Lyon Roller Hockey',
-    default:  'Lyon Roller Hockey — Les Aigles de Lyon',
-  },
-  description: "Club de roller hockey lyonnais fondé en 1974. Inscriptions ouvertes pour la saison 2025-2026.",
-  openGraph: {
-    siteName:  'Lyon Roller Hockey',
-    type:      'website',
-    locale:    'fr_FR',
-  },
+// Lecture des métadonnées SEO depuis la DB (server component — revalidé toutes les 60s)
+async function getSeoParams(): Promise<{ title: string; description: string }> {
+  const defaults = {
+    title:       'Lyon Roller Hockey — Les Aigles de Lyon',
+    description: "Club de roller hockey lyonnais fondé en 1974. Inscriptions ouvertes pour la saison 2025-2026.",
+  }
+  try {
+    const baseUrl = (process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+    const res = await fetch(`${baseUrl}/api/parametres?section=seo`, { next: { revalidate: 60 } })
+    if (!res.ok) return defaults
+    const d: Record<string, string> = await res.json()
+    return {
+      title:       d['seo.title']       || defaults.title,
+      description: d['seo.description'] || defaults.description,
+    }
+  } catch {
+    return defaults
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoParams()
+  return {
+    title: {
+      template: '%s | Lyon Roller Hockey',
+      default:  seo.title,
+    },
+    description: seo.description,
+    openGraph: {
+      siteName: 'Lyon Roller Hockey',
+      type:     'website',
+      locale:   'fr_FR',
+    },
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
