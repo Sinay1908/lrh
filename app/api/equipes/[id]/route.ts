@@ -23,8 +23,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       data: { nom: nom.trim(), niveau: niveau?.trim() || '', categorie, groupe, couleur: couleur || '#0D2150', horaire: horaire || null, coach: coach || null, description: description || null, nbJoueurs: nbJoueurs || 0, actif: actif ?? true },
     })
     return NextResponse.json(equipe)
-  } catch {
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[PUT /api/equipes/:id]', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
 
