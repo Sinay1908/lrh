@@ -37,16 +37,17 @@ model Article {
 }
 
 model Equipe {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   nom         String
   niveau      String
   categorie   String
-  groupe      String  // senior | jeunes | loisir
-  couleur     String  @default("#0D2150")
+  groupe      String   // senior | jeunes | loisir
+  couleur     String   @default("#0D2150")
   horaire     String?
   coach       String?
-  description String? @db.Text
-  actif       Boolean @default(true)
+  description String?  @db.Text
+  nbJoueurs   Int      @default(0)
+  actif       Boolean  @default(true)
   matchs      Match[]
 
   @@map("equipes")
@@ -61,10 +62,10 @@ model Match {
   competition String
   lieu        String?
   date        DateTime
-  statut      String    @default("upcoming") // upcoming | result
+  heure       String?
+  statut      String    @default("upcoming") // upcoming | win | loss | draw
   scoreDom    Int?
   scoreExt    Int?
-  resultat    String?   // win | loss | draw
   createdAt   DateTime  @default(now())
 
   @@map("matchs")
@@ -78,7 +79,7 @@ model Inscription {
   telephone String?
   equipe    String?
   message   String?  @db.Text
-  statut    String   @default("pending") // pending | approved | rejected | archived
+  statut    String   @default("pending") // pending | approved | rejected
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -90,7 +91,7 @@ model Sponsor {
   nom     String
   logoUrl String?
   siteUrl String?
-  niveau  String  @default("partenaire") // premium | partenaire | supporter | media
+  niveau  String  @default("partenaire") // premium | partenaire | supporter
   actif   Boolean @default(true)
   ordre   Int     @default(0)
 
@@ -117,4 +118,79 @@ model Parametre {
   section String @default("general")
 
   @@map("parametres")
+}
+
+model StaffMembre {
+  id          Int      @id @default(autoincrement())
+  nom         String
+  role        String
+  depuis      String?
+  equipeNom   String?
+  description String?  @db.Text
+  actif       Boolean  @default(true)
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("staff")
+}
+
+model Tarif {
+  id          Int      @id @default(autoincrement())
+  saison      String   // "2025-2026"
+  categorie   String   // "Adulte", "Jeune U17", etc.
+  montant     Float
+  description String?  @db.Text
+  actif       Boolean  @default(true)
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tarifs")
+}
+
+model PalmaresItem {
+  id          Int      @id @default(autoincrement())
+  annee       String
+  titre       String
+  competition String
+  description String?  @db.Text
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@map("palmares")
+}
+
+model ClassementLigne {
+  id          Int      @id @default(autoincrement())
+  competition String   // "Nationale 1"
+  saison      String   // "2024-2025"
+  position    Int
+  equipe      String
+  joues       Int      @default(0)
+  gagnes      Int      @default(0)
+  nuls        Int      @default(0)
+  perdus      Int      @default(0)
+  bpour       Int      @default(0)
+  bcontre     Int      @default(0)
+  points      Int      @default(0)
+  isLyon      Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+
+  @@map("classement")
+}
+
+model ProduitBoutique {
+  id          Int      @id @default(autoincrement())
+  nom         String
+  categorie   String   // "Maillot", "Équipement", "Accessoire"
+  prix        Float
+  description String?  @db.Text
+  badge       String?
+  disponible  Boolean  @default(true)
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("boutique")
 }

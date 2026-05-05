@@ -1,16 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { C, R, SH, SECTION_PAD, SECTION_PAD_SM, MAX_W, Badge, Btn, SectionHeader, CTABanner, MatchCard, ContentCard } from '@/components/public/ui'
 
+interface DbMatch { id: number; adversaire: string; competition: string; domicile: boolean; lieu: string | null; date: string; heure: string | null; statut: string; scoreDom: number | null; scoreExt: number | null }
+interface DbArticle { id: number; titre: string; categorie: string | null; extrait: string | null; publishedAt: string | null; createdAt: string }
+interface DbEquipe { id: number; nom: string; categorie: string; couleur: string }
+
 function HeroStatCard({ number, label }: { number: string; label: string }) {
   return (
-    <div style={{
-      background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(8px)',
-      padding: '22px 18px', textAlign: 'center',
-      borderRadius: R.card, border: '1px solid rgba(168,214,232,0.12)',
-    }}>
+    <div style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(8px)', padding: '22px 18px', textAlign: 'center', borderRadius: R.card, border: '1px solid rgba(168,214,232,0.12)' }}>
       <div style={{ color: C.lightBlue, fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 34, lineHeight: 1 }}>{number}</div>
       <div style={{ color: 'rgba(255,255,255,0.52)', fontSize: 11.5, marginTop: 5, fontFamily: "'Barlow',sans-serif", fontWeight: 500 }}>{label}</div>
     </div>
@@ -21,81 +21,49 @@ function TeamMiniCard({ name, cat, color }: { name: string; cat: string; color: 
   const [hov, setHov] = useState(false)
   return (
     <a href="/equipes" onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{
-        background: '#fff', borderRadius: R.card, padding: '18px 16px',
-        boxShadow: hov ? SH.cardHover : SH.card,
-        cursor: 'pointer', transition: 'all 0.2s',
-        transform: hov ? 'translateY(-3px)' : 'none',
-        borderTop: `3px solid ${color}`, textAlign: 'center', textDecoration: 'none',
-      }}>
+      style={{ background: '#fff', borderRadius: R.card, padding: '18px 16px', boxShadow: hov ? SH.cardHover : SH.card, cursor: 'pointer', transition: 'all 0.2s', transform: hov ? 'translateY(-3px)' : 'none', borderTop: `3px solid ${color}`, textAlign: 'center', textDecoration: 'none' }}>
       <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 17, color: C.navy, lineHeight: 1.15 }}>{name}</div>
       <div style={{ color: C.muted, fontSize: 12, marginTop: 5, fontWeight: 500 }}>{cat}</div>
     </a>
   )
 }
 
-const MATCHES = [
-  { date: '26', day: 'AVR', time: '15h00', home: 'Lyon RH',       away: 'Grenoble RH',   competition: 'Nationale 1', location: 'Gymnase Vieux-Lyon' },
-  { date: '03', day: 'MAI', time: '18h00', home: 'Marseille RH',  away: 'Lyon RH',        competition: 'Nationale 1', location: 'Palais des Sports, Marseille' },
-  { date: '10', day: 'MAI', time: '15h00', home: 'Lyon RH',       away: 'Paris RHC',      competition: 'Nationale 1', location: 'Gymnase Vieux-Lyon' },
-]
-
-const NEWS = [
-  { badge: 'Résultat',    title: 'Victoire 6-2 face à Bordeaux à domicile',    meta: '18 avril 2025', excerpt: "Une prestation collective convaincante. L'équipe première s'impose largement et remonte au classement." },
-  { badge: 'Recrutement', title: 'Recherche de joueurs U14 pour 2025-26',       meta: '15 avril 2025', excerpt: "Votre enfant aime le sport et les patins ? Rejoignez les jeunes Aigles lyonnais dès la rentrée." },
-  { badge: 'Compétition', title: '3e place en fin de saison : les playoffs approchent', meta: '10 avril 2025', excerpt: "Après 22 journées, les Aigles terminent à la 3e place et se qualifient pour les playoffs." },
-]
-
-const TEAMS = [
-  { name: 'Nationale 1',   cat: 'Équipe première', color: C.red  },
-  { name: 'Régionale 1',   cat: 'Seniors',         color: C.navy },
-  { name: 'Régionale 2',   cat: 'Seniors',         color: C.navy },
-  { name: 'U17 Juniors',   cat: 'Jeunes',          color: '#1E6B9A' },
-  { name: 'U14 Cadets',    cat: 'Jeunes',          color: '#1E6B9A' },
-  { name: 'U11 Poussins',  cat: 'Jeunes',          color: '#1E6B9A' },
-  { name: 'Loisir',        cat: 'Tout niveau',     color: '#2A7A4B' },
-]
-
 const HERO_STATS = [['50+', "Ans d'histoire"], ['180+', 'Licenciés'], ['7', 'Équipes'], ['12', 'Titres']]
 
+function fmtDate(dateStr: string) {
+  const d = new Date(dateStr)
+  return { date: d.getDate().toString().padStart(2,'0'), day: d.toLocaleDateString('fr-FR',{month:'short'}).toUpperCase().replace('.','') }
+}
+
 export default function HomePage() {
+  const [matchs, setMatchs]   = useState<DbMatch[]>([])
+  const [articles, setArticles] = useState<DbArticle[]>([])
+  const [equipes, setEquipes] = useState<DbEquipe[]>([])
+
+  useEffect(() => {
+    fetch('/api/matchs?statut=upcoming').then(r=>r.json()).then(data => setMatchs(Array.isArray(data) ? data.slice(0,3) : [])).catch(()=>{})
+    fetch('/api/articles?statut=published').then(r=>r.json()).then(data => setArticles(Array.isArray(data) ? data.slice(0,3) : [])).catch(()=>{})
+    fetch('/api/equipes').then(r=>r.json()).then(data => setEquipes(Array.isArray(data) ? data.filter((e: DbEquipe) => e) : [])).catch(()=>{})
+  }, [])
+
   return (
     <div>
       {/* ── HERO ── */}
-      <div style={{
-        background: C.navy, position: 'relative',
-        overflow: 'hidden', minHeight: '90vh', display: 'flex', alignItems: 'center',
-      }}>
-        <div style={{ position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse 75% 75% at 70% 50%, rgba(168,214,232,0.08) 0%, transparent 60%)' }} />
-        <div style={{ position: 'absolute', right: '-3%', top: '50%', transform: 'translateY(-50%)',
-          width: 520, height: 520, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(168,214,232,0.07) 0%, transparent 70%)' }} />
-        <Image src="/assets/logo-secondaire.png" alt="" width={72} height={72}
-          style={{ position: 'absolute', right: '26%', top: '10%', opacity: 0.06, filter: 'brightness(10)', pointerEvents: 'none' }} />
-        <Image src="/assets/logo-principal.png" alt="" width={500} height={500}
-          style={{ position: 'absolute', right: '2%', top: '50%', transform: 'translateY(-50%)',
-            maxHeight: 500, opacity: 0.10, filter: 'brightness(10)', pointerEvents: 'none' }} />
+      <div style={{ background: C.navy, position: 'relative', overflow: 'hidden', minHeight: '90vh', display: 'flex', alignItems: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 75% 75% at 70% 50%, rgba(168,214,232,0.08) 0%, transparent 60%)' }} />
+        <Image src="/assets/logo-secondaire.png" alt="" width={72} height={72} style={{ position: 'absolute', right: '26%', top: '10%', opacity: 0.06, filter: 'brightness(10)', pointerEvents: 'none' }} />
+        <Image src="/assets/logo-principal.png" alt="" width={500} height={500} style={{ position: 'absolute', right: '2%', top: '50%', transform: 'translateY(-50%)', maxHeight: 500, opacity: 0.10, filter: 'brightness(10)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3 }}>
           <svg viewBox="0 0 1440 64" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 64 }}>
             <path d="M0,64 L1440,64 L1440,32 Q1080,0 720,18 Q360,36 0,8 Z" fill={C.offWhite} />
           </svg>
         </div>
-
         <div style={{ ...MAX_W, padding: '80px 28px 110px', position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 48, alignItems: 'center' }}>
             <div style={{ maxWidth: 620 }}>
-              <div style={{ marginBottom: 22 }}>
-                <Badge>Saison 2024 – 2025</Badge>
-              </div>
-              <h1 style={{
-                color: '#fff', fontFamily: "'Barlow Condensed',sans-serif",
-                fontWeight: 900, fontSize: 'clamp(46px,7vw,90px)',
-                textTransform: 'uppercase', margin: 0, lineHeight: 0.93, letterSpacing: 0.5,
-              }}>
-                LA PASSION
-                <br /><span style={{ color: C.lightBlue }}>DU ROLLER</span>
-                <br />HOCKEY
+              <div style={{ marginBottom: 22 }}><Badge>Saison 2024 – 2025</Badge></div>
+              <h1 style={{ color: '#fff', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 'clamp(46px,7vw,90px)', textTransform: 'uppercase', margin: 0, lineHeight: 0.93, letterSpacing: 0.5 }}>
+                LA PASSION<br /><span style={{ color: C.lightBlue }}>DU ROLLER</span><br />HOCKEY
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.66)', fontSize: 17, margin: '26px 0 34px', lineHeight: 1.7, maxWidth: 500 }}>
                 Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.
@@ -118,25 +86,39 @@ export default function HomePage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 36 }}>
             <SectionHeader label="Agenda" title="Prochains Matchs" />
             <div style={{ marginBottom: 44 }}>
-              <Btn variant="secondary" size="sm" onClick={() => window.location.href = '/calendrier'}>
-                Tout le calendrier →
-              </Btn>
+              <Btn variant="secondary" size="sm" onClick={() => window.location.href = '/calendrier'}>Tout le calendrier →</Btn>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {MATCHES.map((m, i) => <MatchCard key={i} {...m} />)}
-          </div>
+          {matchs.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '32px 0', color: C.muted, fontSize: 15 }}>Aucun match à venir pour le moment.</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {matchs.map(m => {
+                const { date, day } = fmtDate(m.date)
+                const home = m.domicile ? 'Lyon RH' : m.adversaire
+                const away = m.domicile ? m.adversaire : 'Lyon RH'
+                return <MatchCard key={m.id} date={date} day={day} time={m.heure || '—'} home={home} away={away} competition={m.competition} location={m.lieu || ''} />
+              })}
+            </div>
+          )}
         </div>
       </div>
 
       {/* ── ACTUALITÉS ── */}
       <div style={{ background: '#fff', padding: SECTION_PAD }}>
         <div style={{ ...MAX_W }}>
-          <SectionHeader label="Actualités" title="Les Dernières Nouvelles"
-            subtitle="Résultats, annonces et vie du club — toute l'actualité des Aigles de Lyon." center />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(290px,1fr))', gap: 22 }}>
-            {NEWS.map((n, i) => <ContentCard key={i} badge={n.badge} title={n.title} meta={n.meta} excerpt={n.excerpt} />)}
-          </div>
+          <SectionHeader label="Actualités" title="Les Dernières Nouvelles" subtitle="Résultats, annonces et vie du club — toute l'actualité des Aigles de Lyon." center />
+          {articles.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '32px 0', color: C.muted }}>Aucune actualité publiée pour le moment.</div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(290px,1fr))', gap: 22 }}>
+              {articles.map(a => {
+                const dateStr = a.publishedAt || a.createdAt
+                const meta = new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || ''} />
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -144,45 +126,23 @@ export default function HomePage() {
       <div style={{ background: C.lightBluePale, padding: SECTION_PAD }}>
         <div style={{ ...MAX_W }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 36 }}>
-            <SectionHeader label="Nos Équipes" title="Pour Tous les Niveaux"
-              subtitle="Du débutant au compétiteur national, une équipe vous attend." />
+            <SectionHeader label="Nos Équipes" title="Pour Tous les Niveaux" subtitle="Du débutant au compétiteur national, une équipe vous attend." />
             <div style={{ marginBottom: 44 }}>
-              <Btn variant="secondary" size="sm" onClick={() => window.location.href = '/equipes'}>
-                Toutes les équipes →
-              </Btn>
+              <Btn variant="secondary" size="sm" onClick={() => window.location.href = '/equipes'}>Toutes les équipes →</Btn>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(165px,1fr))', gap: 12 }}>
-            {TEAMS.map(t => <TeamMiniCard key={t.name} name={t.name} cat={t.cat} color={t.color} />)}
-          </div>
+          {equipes.length === 0 ? (
+            <div style={{ textAlign: 'center', color: C.muted }}>Chargement des équipes…</div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(165px,1fr))', gap: 12 }}>
+              {equipes.map(e => <TeamMiniCard key={e.id} name={e.nom} cat={e.categorie} color={e.couleur} />)}
+            </div>
+          )}
         </div>
       </div>
 
       {/* ── CTA ── */}
-      <CTABanner
-        title="Rejoignez les Aigles de Lyon"
-        subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !"
-        btnLabel="S'inscrire maintenant"
-        btnHref="/inscription"
-      />
-
-      {/* ── PARTENAIRES ── */}
-      <div style={{ background: C.offWhite, padding: SECTION_PAD_SM }}>
-        <div style={{ ...MAX_W, textAlign: 'center' }}>
-          <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', marginBottom: 28 }}>
-            Nos partenaires
-          </div>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            {['Métropole de Lyon', 'Mairie du 5e', 'Decathlon Pro', 'Crédit Lyonnais', 'Sports 69'].map(s => (
-              <div key={s} style={{
-                background: '#fff', border: `1.5px solid ${C.border}`,
-                color: C.navy, padding: '11px 22px', borderRadius: R.card,
-                fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 0.8,
-              }}>{s}</div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <CTABanner title="Rejoignez les Aigles de Lyon" subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !" btnLabel="S'inscrire maintenant" btnHref="/inscription" />
     </div>
   )
 }

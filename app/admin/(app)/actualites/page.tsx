@@ -1,61 +1,104 @@
 'use client'
 
-import { useState } from 'react'
-import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, ImageUpload, Modal, PageHeader, SearchBar, StatusBadge } from '@/components/admin/ui'
+import { useState, useEffect, useCallback } from 'react'
+import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeader, SearchBar, StatusBadge } from '@/components/admin/ui'
 
-interface Article { id: number; title: string; status: string; category: string; author: string; date: string; views: number }
+interface Article { id: number; titre: string; statut: string; categorie: string | null; extrait: string | null; contenu: string; vues: number; publishedAt: string | null; createdAt: string }
 
-const ARTICLES: Article[] = [
-  { id:1, title:'Victoire 6-2 face à Bordeaux à domicile',           status:'published', category:'Résultat',     author:'Admin', date:'18 avr. 2025', views:412 },
-  { id:2, title:'Recherche de joueurs U14 pour la saison 2025-26',    status:'published', category:'Recrutement',  author:'Admin', date:'15 avr. 2025', views:318 },
-  { id:3, title:'3e place en fin de saison régulière',                 status:'published', category:'Compétition',  author:'Admin', date:'10 avr. 2025', views:527 },
-  { id:4, title:'Ouverture des inscriptions pour 2025-2026',           status:'draft',     category:'Inscription',  author:'Admin', date:'08 avr. 2025', views:0   },
-  { id:5, title:'Nouveau partenariat avec Decathlon Pro',              status:'published', category:'Club',         author:'Admin', date:'02 avr. 2025', views:201 },
-  { id:6, title:"Compte-rendu de l'assemblée générale 2025",           status:'draft',     category:'Club',         author:'Admin', date:'28 mar. 2025', views:0   },
-  { id:7, title:'Stage de Pâques pour les U11 et U14',                status:'published', category:'Formation',    author:'Admin', date:'20 mar. 2025', views:289 },
-]
+const EMPTY_FORM = { titre: '', statut: 'draft', categorie: '', extrait: '', contenu: '' }
 
 export default function ActualitesPage() {
-  const [search, setSearch]   = useState('')
-  const [filter, setFilter]   = useState('all')
-  const [modal, setModal]     = useState<null | 'create' | 'edit'>(null)
-  const [form, setForm]       = useState({ title: '', status: 'draft', category: '', excerpt: '' })
+  const [articles, setArticles] = useState<Article[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [search, setSearch]     = useState('')
+  const [filter, setFilter]     = useState('all')
+  const [modal, setModal]       = useState<null | 'create' | 'edit'>(null)
+  const [editId, setEditId]     = useState<number | null>(null)
+  const [form, setForm]         = useState(EMPTY_FORM)
+  const [saving, setSaving]     = useState(false)
 
-  const filtered = ARTICLES.filter(a =>
-    a.title.toLowerCase().includes(search.toLowerCase()) &&
-    (filter === 'all' || a.status === filter)
+  const load = useCallback(() => {
+    setLoading(true)
+    fetch('/api/articles')
+      .then(r => r.json())
+      .then(d => setArticles(Array.isArray(d) ? d : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  const filtered = articles.filter(a =>
+    a.titre.toLowerCase().includes(search.toLowerCase()) &&
+    (filter === 'all' || a.statut === filter)
   )
+
+  const openCreate = () => { setForm(EMPTY_FORM); setEditId(null); setModal('create') }
+  const openEdit   = (a: Article) => {
+    setForm({ titre: a.titre, statut: a.statut, categorie: a.categorie || '', extrait: a.extrait || '', contenu: a.contenu })
+    setEditId(a.id)
+    setModal('edit')
+  }
+
+  const handleSave = async () => {
+    if (!form.titre.trim() || !form.contenu.trim()) return
+    setSaving(true)
+    try {
+      if (modal === 'create') {
+        await fetch('/api/articles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        })
+      } else if (editId) {
+        await fetch(`/api/articles/${editId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        })
+      }
+      setModal(null)
+      load()
+    } catch { /* ignore */ } finally { setSaving(false) }
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Supprimer cet article ?')) return
+    await fetch(`/api/articles/${id}`, { method: 'DELETE' })
+    load()
+  }
+
+  const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 
   const cols: Col[] = [
     { label: '', key: 'img', render: () => (
-      <div style={{ width: 48, height: 34, borderRadius: A.r6,
-        background: `linear-gradient(135deg, ${A.navy} 0%, #1a3568 100%)`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 48, height: 34, borderRadius: A.r6, background: `linear-gradient(135deg, ${A.navy} 0%, #1a3568 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="none" stroke="rgba(168,214,232,0.4)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
         </svg>
       </div>
     )},
-    { label: 'Titre', key: 'title', wrap: true, render: a => (
+    { label: 'Titre', key: 'titre', wrap: true, render: (a: Article) => (
       <div>
-        <div style={{ fontWeight: 600, fontSize: 13.5, color: A.textPri, marginBottom: 2 }}>{a.title}</div>
-        <div style={{ fontSize: 12, color: A.muted }}>{a.author} · {a.date}</div>
+        <div style={{ fontWeight: 600, fontSize: 13.5, color: A.textPri, marginBottom: 2 }}>{a.titre}</div>
+        <div style={{ fontSize: 12, color: A.muted }}>{fmtDate(a.publishedAt || a.createdAt)}</div>
       </div>
     )},
-    { label: 'Catégorie', key: 'category', render: a => (
-      <span style={{ background: A.bg, color: A.textSec, padding: '3px 9px', borderRadius: 99, fontSize: 12, fontWeight: 500 }}>{a.category}</span>
-    )},
-    { label: 'Statut', key: 'status', render: a => <StatusBadge status={a.status} /> },
-    { label: 'Vues', key: 'views', right: true, render: a => (
-      <span style={{ color: a.views > 0 ? A.textPri : A.muted, fontWeight: 500 }}>
-        {a.views > 0 ? a.views.toLocaleString('fr-FR') : '—'}
+    { label: 'Catégorie', key: 'categorie', render: (a: Article) => (
+      <span style={{ background: A.bg, color: A.textSec, padding: '3px 9px', borderRadius: 99, fontSize: 12, fontWeight: 500 }}>
+        {a.categorie || '—'}
       </span>
     )},
-    { label: '', key: 'actions', right: true, render: a => (
+    { label: 'Statut', key: 'statut', render: (a: Article) => <StatusBadge status={a.statut} /> },
+    { label: 'Vues', key: 'vues', right: true, render: (a: Article) => (
+      <span style={{ color: a.vues > 0 ? A.textPri : A.muted, fontWeight: 500 }}>
+        {a.vues > 0 ? a.vues.toLocaleString('fr-FR') : '—'}
+      </span>
+    )},
+    { label: '', key: 'actions', right: true, render: (a: Article) => (
       <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
-        <IconBtn icon="eye"   title="Aperçu"    onClick={() => {}} />
-        <IconBtn icon="edit"  title="Modifier"  onClick={() => { setForm({ title: a.title, status: a.status, category: a.category, excerpt: '' }); setModal('edit') }} color={A.blue} />
-        <IconBtn icon="trash" title="Supprimer" onClick={() => {}} danger />
+        <IconBtn icon="edit"  title="Modifier"  onClick={() => openEdit(a)} color={A.blue} />
+        <IconBtn icon="trash" title="Supprimer" onClick={() => handleDelete(a.id)} danger />
       </div>
     )},
   ]
@@ -63,52 +106,58 @@ export default function ActualitesPage() {
   return (
     <div>
       <PageHeader title="Actualités" subtitle="Gérez les articles et publications du club"
-        action="Nouvel article" actionIcon="plus" onAction={() => { setForm({ title: '', status: 'draft', category: '', excerpt: '' }); setModal('create') }}
+        action="Nouvel article" actionIcon="plus" onAction={openCreate}
         breadcrumb="Actualités" />
 
       <ACard noPad>
-        <div style={{ padding: '14px 18px', borderBottom: `1px solid ${A.border}`,
-          display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ padding: '14px 18px', borderBottom: `1px solid ${A.border}`, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un article..." />
           <div style={{ display: 'flex', gap: 6 }}>
             {([['all','Tous'],['published','Publiés'],['draft','Brouillons']] as [string,string][]).map(([v,l]) => (
               <button key={v} onClick={() => setFilter(v)}
-                style={{ background: filter === v ? A.navy : A.bg, color: filter === v ? '#fff' : A.textSec,
-                  border: `1px solid ${filter === v ? A.navy : A.border}`,
-                  padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer',
-                  fontFamily: "'Barlow',sans-serif", fontWeight: 500, fontSize: 13, whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+                style={{ background: filter === v ? A.navy : A.bg, color: filter === v ? '#fff' : A.textSec, border: `1px solid ${filter === v ? A.navy : A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontFamily: "'Barlow',sans-serif", fontWeight: 500, fontSize: 13, whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
                 {l}
               </button>
             ))}
           </div>
           <div style={{ marginLeft: 'auto', color: A.muted, fontSize: 12.5 }}>
-            {filtered.length} article{filtered.length !== 1 ? 's' : ''}
+            {loading ? 'Chargement…' : `${filtered.length} article${filtered.length !== 1 ? 's' : ''}`}
           </div>
         </div>
-        <ATable cols={cols} rows={filtered as unknown as Record<string, unknown>[]} emptyMsg="Aucun article trouvé" />
+        <ATable cols={cols as unknown as Col[]} rows={filtered as unknown as Record<string, unknown>[]} emptyMsg="Aucun article trouvé" />
       </ACard>
 
       <Modal open={!!modal} onClose={() => setModal(null)}
         title={modal === 'create' ? 'Nouvel article' : "Modifier l'article"}>
-        <ImageUpload label="Image de couverture" hint="PNG, JPG · 1200×600px recommandé" />
-        <AInput label="Titre" value={form.title}
-          onChange={e => setForm({ ...form, title: e.target.value })}
+        <AInput label="Titre *" value={form.titre}
+          onChange={e => setForm({ ...form, titre: e.target.value })}
           placeholder="Titre de l'article" required />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <ASelect label="Catégorie" value={form.category}
-            onChange={e => setForm({ ...form, category: e.target.value })}
-            options={[{value:'',label:'Choisir...'},{value:'Résultat',label:'Résultat'},{value:'Recrutement',label:'Recrutement'},{value:'Compétition',label:'Compétition'},{value:'Club',label:'Club'},{value:'Formation',label:'Formation'}]} />
-          <ASelect label="Statut" value={form.status}
-            onChange={e => setForm({ ...form, status: e.target.value })}
+          <ASelect label="Catégorie" value={form.categorie}
+            onChange={e => setForm({ ...form, categorie: e.target.value })}
+            options={[
+              {value:'',label:'Choisir...'},
+              {value:'Résultat',label:'Résultat'},
+              {value:'Recrutement',label:'Recrutement'},
+              {value:'Compétition',label:'Compétition'},
+              {value:'Club',label:'Club'},
+              {value:'Formation',label:'Formation'},
+              {value:'Inscription',label:'Inscription'},
+            ]} />
+          <ASelect label="Statut" value={form.statut}
+            onChange={e => setForm({ ...form, statut: e.target.value })}
             options={[{value:'draft',label:'Brouillon'},{value:'published',label:'Publié'}]} />
         </div>
-        <AInput label="Extrait" value={form.excerpt}
-          onChange={e => setForm({ ...form, excerpt: e.target.value })}
-          placeholder="Résumé court de l'article..." rows={3} />
+        <AInput label="Extrait" value={form.extrait}
+          onChange={e => setForm({ ...form, extrait: e.target.value })}
+          placeholder="Résumé court affiché en aperçu..." rows={2} />
+        <AInput label="Contenu *" value={form.contenu}
+          onChange={e => setForm({ ...form, contenu: e.target.value })}
+          placeholder="Contenu complet de l'article..." rows={8} />
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6 }}>
           <ABtn variant="ghost" onClick={() => setModal(null)}>Annuler</ABtn>
-          <ABtn variant="navy" onClick={() => setModal(null)}>
-            {modal === 'create' ? "Créer l'article" : 'Enregistrer'}
+          <ABtn variant="navy" onClick={handleSave} disabled={saving || !form.titre.trim() || !form.contenu.trim()}>
+            {saving ? 'Enregistrement…' : modal === 'create' ? "Créer l'article" : 'Enregistrer'}
           </ABtn>
         </div>
       </Modal>

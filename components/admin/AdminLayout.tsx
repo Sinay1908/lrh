@@ -7,14 +7,19 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { A, Icon } from './ui'
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { id: string; label: string; icon: string; href: string; badge?: string | number }[] = [
   { id: 'dashboard',     label: 'Tableau de bord',   icon: 'dashboard',     href: '/admin' },
   { id: 'news',          label: 'Actualités',         icon: 'news',          href: '/admin/actualites' },
   { id: 'teams',         label: 'Équipes',            icon: 'teams',         href: '/admin/equipes' },
   { id: 'matches',       label: 'Matchs & Résultats', icon: 'matches',       href: '/admin/matchs' },
+  { id: 'classement',    label: 'Classement',         icon: 'star',          href: '/admin/classement' },
+  { id: 'boutique',      label: 'Boutique',           icon: 'sponsors',      href: '/admin/boutique' },
+  { id: 'staff',         label: 'Staff technique',    icon: 'teams',         href: '/admin/staff' },
+  { id: 'tarifs',        label: 'Tarifs',             icon: 'settings',      href: '/admin/tarifs' },
+  { id: 'palmares',      label: 'Palmarès',           icon: 'star',          href: '/admin/palmares' },
   { id: 'registrations', label: 'Inscriptions',       icon: 'registrations', href: '/admin/inscriptions' },
   { id: 'sponsors',      label: 'Partenaires',        icon: 'sponsors',      href: '/admin/partenaires' },
-  { id: 'messages',      label: 'Messages',           icon: 'messages',      href: '/admin/messages', badge: 4 },
+  { id: 'messages',      label: 'Messages',           icon: 'messages',      href: '/admin/messages' },
   { id: 'settings',      label: 'Paramètres',         icon: 'settings',      href: '/admin/parametres' },
 ]
 
