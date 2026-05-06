@@ -14,6 +14,7 @@ export default function FaqPage() {
   const [editing, setEditing] = useState<FaqItem | null>(null)
   const [form, setForm]       = useState(INIT)
   const [saving, setSaving]   = useState(false)
+  const [error, setError]     = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -27,23 +28,33 @@ export default function FaqPage() {
   }, [])
   useEffect(() => { load() }, [load])
 
-  const openCreate = () => { setEditing(null); setForm(INIT); setModal(true) }
+  const openCreate = () => { setEditing(null); setForm(INIT); setError(null); setModal(true) }
   const openEdit   = (item: FaqItem) => {
     setEditing(item)
     setForm({ question: item.question, reponse: item.reponse, ordre: String(item.ordre) })
-    setModal(true)
+    setError(null); setModal(true)
   }
 
   const handleSave = async () => {
     setSaving(true)
+    setError(null)
     try {
       const body = { ...form, ordre: Number(form.ordre) }
+      let res: Response
       if (editing) {
-        await fetch(`/api/faq/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        res = await fetch(`/api/faq/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       } else {
-        await fetch('/api/faq', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        res = await fetch('/api/faq', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      }
+      if (!res.ok) {
+        let msg = `Erreur ${res.status}`
+        try { const d = await res.json(); msg = d.error || msg } catch {}
+        setError(msg)
+        return
       }
       await load(); setModal(false)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur réseau')
     } finally { setSaving(false) }
   }
 
@@ -104,7 +115,12 @@ export default function FaqPage() {
         }
       </ACard>
 
-      <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier la question' : 'Nouvelle question FAQ'}>
+      <Modal open={modal} onClose={() => { setModal(false); setError(null) }} title={editing ? 'Modifier la question' : 'Nouvelle question FAQ'}>
+        {error && (
+          <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 12, color: '#991b1b', fontSize: 13, fontWeight: 500 }}>
+            ⚠️ {error}
+          </div>
+        )}
         <AInput
           label="Question *"
           value={form.question}
