@@ -97,9 +97,27 @@ const VALUES = [
   { icon: '🏙️', title: 'Ancrage local', desc: "Fiers de représenter Lyon, nous sommes un acteur sportif et social de notre territoire depuis 50 ans." },
 ]
 
+const DEF_IDENTITE = {
+  para1:    "Lyon Roller Hockey est l'un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l'appartenance à une vraie communauté sportive.",
+  para2:    "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.",
+  imageUrl: '',
+  caption:  "Photo de l'équipe — saison 2024-2025",
+}
+
+const DEF_STATS = [
+  { valeur: '50+',  label: "Ans d'existence"     },
+  { valeur: '180+', label: 'Licenciés actifs'     },
+  { valeur: '7',    label: 'Équipes'              },
+  { valeur: '12',   label: 'Titres nationaux'     },
+  { valeur: '3',    label: "Terrains d'entraînement" },
+  { valeur: '1974', label: 'Fondation'            },
+]
+
 export default function ClubClient({ badge }: { badge: string }) {
   const [staff, setStaff]       = useState<StaffMembre[]>([])
   const [palmares, setPalmares] = useState<PalmaresItem[]>([])
+  const [identite, setIdentite] = useState(DEF_IDENTITE)
+  const [stats, setStats]       = useState(DEF_STATS)
 
   useEffect(() => {
     fetch('/api/staff')
@@ -109,6 +127,21 @@ export default function ClubClient({ badge }: { badge: string }) {
     fetch('/api/palmares')
       .then(r => r.json())
       .then(d => setPalmares(Array.isArray(d) ? d.sort((a: PalmaresItem, b: PalmaresItem) => a.annee.localeCompare(b.annee)) : []))
+      .catch(() => {})
+    fetch('/api/parametres?section=club')
+      .then(r => r.json())
+      .then((d: Record<string, string>) => {
+        setIdentite({
+          para1:    d['club.identite.para1']    || DEF_IDENTITE.para1,
+          para2:    d['club.identite.para2']    || DEF_IDENTITE.para2,
+          imageUrl: d['club.identite.imageUrl'] || '',
+          caption:  d['club.identite.caption']  || DEF_IDENTITE.caption,
+        })
+        setStats(prev => prev.map((s, i) => ({
+          valeur: d[`club.stat.${i + 1}.valeur`] || s.valeur,
+          label:  d[`club.stat.${i + 1}.label`]  || s.label,
+        })))
+      })
       .catch(() => {})
   }, [])
 
@@ -125,18 +158,24 @@ export default function ClubClient({ badge }: { badge: string }) {
             <div>
               <SectionHeader label="Notre identité" title="Les Aigles de Lyon" />
               <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 18 }}>
-                Lyon Roller Hockey est l&apos;un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l&apos;appartenance à une vraie communauté sportive.
+                {identite.para1}
               </p>
               <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 28 }}>
-                Aujourd&apos;hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.
+                {identite.para2}
               </p>
               <Btn onClick={() => window.location.href = '/inscription'}>Rejoindre le club</Btn>
             </div>
             <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, borderRadius: 16, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-              <Image src="/assets/mascotte.png" alt="Mascotte Lyon RH" width={200} height={200}
-                style={{ height: '78%', width: 'auto', opacity: 0.30, objectFit: 'contain' }} />
-              <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(13,33,80,0.75)', borderRadius: R.inner, padding: '10px 14px', textAlign: 'center', fontFamily: "'Barlow',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic' }}>
-                Photo de l&apos;équipe — saison 2024-2025
+              {identite.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={identite.imageUrl} alt="Photo équipe Lyon RH"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+              ) : (
+                <Image src="/assets/mascotte.png" alt="Mascotte Lyon RH" width={200} height={200}
+                  style={{ height: '78%', width: 'auto', opacity: 0.30, objectFit: 'contain' }} />
+              )}
+              <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(13,33,80,0.75)', borderRadius: R.inner, padding: '10px 14px', textAlign: 'center', fontFamily: "'Barlow',sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic', zIndex: 1 }}>
+                {identite.caption}
               </div>
             </div>
           </div>
@@ -146,11 +185,9 @@ export default function ClubClient({ badge }: { badge: string }) {
       <div style={{ background: C.navy, padding: SECTION_PAD_SM }} className="rsp-section-sm">
         <div style={{ ...MAX_W }}>
           <div className="stats-bar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(130px,1fr))', gap: 0, borderRadius: R.card, overflow: 'hidden' }}>
-            {[["50+", "Ans d'existence"], ['180+', 'Licenciés actifs'], ['7', 'Équipes'],
-              ['12', 'Titres nationaux'], ['3', "Terrains d'entraînement"], ['1974', 'Fondation']
-            ].map(([n, l], i) => (
-              <div key={l} className="stats-bar-divider" style={{ borderRight: i < 5 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                <StatBlock number={n} label={l} dark />
+            {stats.map((s, i) => (
+              <div key={i} className="stats-bar-divider" style={{ borderRight: i < 5 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+                <StatBlock number={s.valeur} label={s.label} dark />
               </div>
             ))}
           </div>
