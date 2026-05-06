@@ -69,11 +69,10 @@ const STEPS = [
 ]
 
 const DOCS = [
-  'Certificat médical de moins de 3 mois',
+  'Certificat médical de moins de 6 mois',
   "Photo d'identité",
-  "Copie de la pièce d'identité",
-  'Règlement de la cotisation (chèque ou virement)',
-  'Formulaire de licence FFRS complété',
+  "Dossier d'inscription",
+  'Cotisation (chèque, espèces ou virement)',
 ]
 
 const fieldStyle: React.CSSProperties = {
