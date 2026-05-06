@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeader, SearchBar } from '@/components/admin/ui'
 
-interface Match { id: number; adversaire: string; competition: string; domicile: boolean; lieu: string | null; date: string; heure: string | null; statut: string; scoreDom: number | null; scoreExt: number | null; equipe?: { nom: string } | null }
+interface Match  { id: number; adversaire: string; competition: string; domicile: boolean; lieu: string | null; date: string; heure: string | null; statut: string; scoreDom: number | null; scoreExt: number | null; equipe?: { nom: string } | null }
+interface Equipe { id: number; nom: string; actif: boolean }
 
-const INIT = { adversaire: '', competition: 'Nationale 1', domicile: 'true', lieu: '', date: '', heure: '', statut: 'upcoming', scoreDom: '', scoreExt: '', equipeId: '' }
+const INIT = { adversaire: '', competition: '', domicile: 'true', lieu: '', date: '', heure: '', statut: 'upcoming', scoreDom: '', scoreExt: '', equipeId: '' }
 
 function fmt(date: string) {
   return new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -13,6 +14,7 @@ function fmt(date: string) {
 
 export default function MatchsPage() {
   const [matchs, setMatchs]   = useState<Match[]>([])
+  const [equipes, setEquipes] = useState<Equipe[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab]         = useState<'upcoming' | 'results'>('upcoming')
   const [search, setSearch]   = useState('')
@@ -23,8 +25,14 @@ export default function MatchsPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
-    try { const r = await fetch('/api/matchs'); setMatchs(await r.json()) } finally { setLoading(false) }
+    try {
+      const [r, eq] = await Promise.all([fetch('/api/matchs'), fetch('/api/equipes')])
+      setMatchs(await r.json())
+      const eqData = await eq.json()
+      setEquipes(Array.isArray(eqData) ? eqData.filter((e: Equipe) => e.actif) : [])
+    } finally { setLoading(false) }
   }, [])
+
   useEffect(() => { load() }, [load])
 
   const upcoming = matchs.filter(m => m.statut === 'upcoming')
@@ -34,11 +42,17 @@ export default function MatchsPage() {
     return m.adversaire.toLowerCase().includes(s) || m.competition.toLowerCase().includes(s)
   })
 
-  const openCreate = () => { setEditing(null); setForm(INIT); setModal(true) }
-  const openEdit   = (m: Match) => {
+  // Options compétition = équipes actives
+  const compOptions = equipes.map(e => ({ value: e.nom, label: e.nom }))
+
+  const openCreate = () => {
+    setEditing(null)
+    setForm({ ...INIT, competition: equipes[0]?.nom ?? '' })
+    setModal(true)
+  }
+  const openEdit = (m: Match) => {
     setEditing(m)
-    const d = new Date(m.date)
-    const dateStr = d.toISOString().slice(0, 10)
+    const dateStr = new Date(m.date).toISOString().slice(0, 10)
     setForm({ adversaire: m.adversaire, competition: m.competition, domicile: m.domicile ? 'true' : 'false', lieu: m.lieu || '', date: dateStr, heure: m.heure || '', statut: m.statut, scoreDom: m.scoreDom !== null ? String(m.scoreDom) : '', scoreExt: m.scoreExt !== null ? String(m.scoreExt) : '', equipeId: '' })
     setModal(true)
   }
@@ -47,11 +61,8 @@ export default function MatchsPage() {
     setSaving(true)
     try {
       const body = { ...form, domicile: form.domicile === 'true' }
-      if (editing) {
-        await fetch(`/api/matchs/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      } else {
-        await fetch('/api/matchs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      }
+      if (editing) await fetch(`/api/matchs/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      else         await fetch('/api/matchs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       await load(); setModal(false)
     } finally { setSaving(false) }
   }
@@ -62,7 +73,9 @@ export default function MatchsPage() {
   }
 
   const cols: Col[] = [
-    { label: 'Date', key: 'date', render: m => <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700 }}>{fmt((m as Match).date)}</span> },
+    { label: 'Date', key: 'date', render: m => (
+      <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700 }}>{fmt((m as Match).date)}</span>
+    )},
     { label: 'Rencontre', key: 'adversaire', wrap: true, render: m => {
       const match = m as Match
       const home = match.domicile ? 'Lyon RH' : match.adversaire
@@ -87,7 +100,7 @@ export default function MatchsPage() {
     }},
     { label: 'Résultat', key: 'statut', render: m => {
       const s = m.statut as string
-      const colors: Record<string, [string,string]> = { upcoming: ['#EFF6FF','#1D4ED8'], win: ['#ECFDF5','#065F46'], loss: ['#FFF1F2','#BE123C'], draw: ['#FFF7ED','#9A3412'] }
+      const colors: Record<string, [string, string]> = { upcoming: ['#EFF6FF','#1D4ED8'], win: ['#ECFDF5','#065F46'], loss: ['#FFF1F2','#BE123C'], draw: ['#FFF7ED','#9A3412'] }
       const labels: Record<string, string> = { upcoming: 'À venir', win: 'Victoire', loss: 'Défaite', draw: 'Nul' }
       const [bg, color] = colors[s] || ['#F3F4F6','#374151']
       return <span style={{ background: bg, color, padding: '2px 8px', borderRadius: 99, fontSize: 12, fontWeight: 600 }}>{labels[s] || s}</span>
@@ -108,40 +121,50 @@ export default function MatchsPage() {
         <div style={{ display: 'flex', borderBottom: `1px solid ${A.border}` }}>
           {([['upcoming','Matchs à venir'],['results','Résultats']] as [string,string][]).map(([id, label]) => (
             <button key={id} onClick={() => setTab(id as 'upcoming' | 'results')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 20px', fontFamily: "'Barlow',sans-serif", fontWeight: 600, fontSize: 14, color: tab === id ? A.navy : A.muted, borderBottom: `2px solid ${tab === id ? A.red : 'transparent'}`, marginBottom: -1, transition: 'all 0.15s' }}>{label}</button>
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 20px', fontFamily: "'Barlow',sans-serif", fontWeight: 600, fontSize: 14, color: tab === id ? A.navy : A.muted, borderBottom: `2px solid ${tab === id ? A.red : 'transparent'}`, marginBottom: -1, transition: 'all 0.15s' }}>
+              {label}
+            </button>
           ))}
         </div>
         <div style={{ padding: '12px 16px', borderBottom: `1px solid ${A.border}` }}>
           <SearchBar value={search} onChange={setSearch} placeholder="Rechercher adversaire, compétition…" />
         </div>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: 48, color: A.muted }}>Chargement…</div>
-        ) : (
-          <ATable cols={cols} rows={data as unknown as Record<string, unknown>[]} />
-        )}
+        {loading
+          ? <div style={{ textAlign: 'center', padding: 48, color: A.muted }}>Chargement…</div>
+          : <ATable cols={cols} rows={data as unknown as Record<string, unknown>[]} />
+        }
       </ACard>
 
       <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier le match' : 'Ajouter un match'} width={560}>
         <div className="rsp-form-2col">
-          <AInput label="Date" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required />
+          <AInput label="Date *" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required />
           <AInput label="Horaire" value={form.heure} onChange={e => setForm({ ...form, heure: e.target.value })} placeholder="15h00" />
         </div>
         <div className="rsp-form-2col">
-          <AInput label="Adversaire" value={form.adversaire} onChange={e => setForm({ ...form, adversaire: e.target.value })} required placeholder="ex. Grenoble RH" />
+          <AInput label="Adversaire *" value={form.adversaire} onChange={e => setForm({ ...form, adversaire: e.target.value })} required placeholder="ex. Grenoble RH" />
           <ASelect label="Domicile / Extérieur" value={form.domicile} onChange={e => setForm({ ...form, domicile: e.target.value })}
-            options={[{value:'true',label:'Domicile (Lyon reçoit)'},{value:'false',label:'Extérieur (Lyon déplace)'}]} />
+            options={[{ value: 'true', label: 'Domicile (Lyon reçoit)' }, { value: 'false', label: 'Extérieur (Lyon déplace)' }]} />
         </div>
         <div className="rsp-form-2col">
-          <ASelect label="Compétition" value={form.competition} onChange={e => setForm({ ...form, competition: e.target.value })}
-            options={['Nationale 1','Régionale 1','Régionale 2','U17','U14','U11','Loisir','Playoffs','Coupe de France'].map(v => ({value:v,label:v}))} />
+          <ASelect
+            label="Compétition"
+            value={form.competition}
+            onChange={e => setForm({ ...form, competition: e.target.value })}
+            options={compOptions.length > 0 ? compOptions : [{ value: '', label: '— Aucune équipe créée —' }]}
+          />
           <ASelect label="Statut" value={form.statut} onChange={e => setForm({ ...form, statut: e.target.value })}
-            options={[{value:'upcoming',label:'À venir'},{value:'win',label:'Victoire'},{value:'draw',label:'Nul'},{value:'loss',label:'Défaite'}]} />
+            options={[{ value: 'upcoming', label: 'À venir' }, { value: 'win', label: 'Victoire' }, { value: 'draw', label: 'Nul' }, { value: 'loss', label: 'Défaite' }]} />
         </div>
         <AInput label="Lieu" value={form.lieu} onChange={e => setForm({ ...form, lieu: e.target.value })} placeholder="Gymnase Vieux-Lyon" />
         {form.statut !== 'upcoming' && (
           <div className="rsp-form-2col">
-            <AInput label="Score Lyon" type="number" value={form.scoreDom} onChange={e => setForm({ ...form, scoreDom: e.target.value })} placeholder="0" />
-            <AInput label="Score adversaire" type="number" value={form.scoreExt} onChange={e => setForm({ ...form, scoreExt: e.target.value })} placeholder="0" />
+            <AInput label="Score Lyon"       type="number" value={form.scoreDom}  onChange={e => setForm({ ...form, scoreDom: e.target.value })}  placeholder="0" />
+            <AInput label="Score adversaire" type="number" value={form.scoreExt}  onChange={e => setForm({ ...form, scoreExt: e.target.value })}  placeholder="0" />
+          </div>
+        )}
+        {equipes.length === 0 && (
+          <div style={{ background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: A.r8, padding: '10px 14px', color: '#9A3412', fontSize: 13 }}>
+            ⚠️ Aucune équipe créée. <strong>Ajoutez d&apos;abord des équipes</strong> dans la section &quot;Équipes&quot; pour les retrouver ici.
           </div>
         )}
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6 }}>
