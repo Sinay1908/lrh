@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
-    "postinstall": "npx prisma generate && next build"
+    "postinstall": "npx prisma generate && next build",
+    "postbuild": "node scripts/fix-prisma-standalone.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

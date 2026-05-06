@@ -127,15 +127,19 @@ export default function ContactClient({ badge, faqs }: { badge: string; faqs: Fa
         <div className="rsp-2col" style={{ ...MAX_W }}>
           <div>
             <SectionHeader label="Nous trouver" title="Notre Salle" />
-            <div style={{ background: C.lightBluePale, borderRadius: R.card, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, position: 'relative', overflow: 'hidden', border: `1.5px solid ${C.border}` }}>
-              <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.25 }} viewBox="0 0 400 300">
-                {[0,1,2,3,4,5,6].map(i => <line key={`h${i}`} x1="0" y1={i*50} x2="400" y2={i*50} stroke="#0D2150" strokeWidth="0.7"/>)}
-                {[0,1,2,3,4,5,6,7,8].map(i => <line key={`v${i}`} x1={i*50} y1="0" x2={i*50} y2="300" stroke="#0D2150" strokeWidth="0.7"/>)}
-              </svg>
-              <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
-                <div style={{ width: 44, height: 44, borderRadius: '50% 50% 50% 0', background: C.red, transform: 'rotate(-45deg)', margin: '0 auto 6px', boxShadow: '0 4px 14px rgba(212,43,43,0.45)' }} />
-                <div style={{ background: 'rgba(13,33,80,0.82)', color: '#fff', padding: '6px 14px', borderRadius: R.inner, marginTop: 6, fontFamily: "'Barlow',sans-serif", fontSize: 12, fontWeight: 600 }}>{contact.address}</div>
-              </div>
+            <div style={{ borderRadius: R.card, height: 300, overflow: 'hidden', marginBottom: 20, border: `1.5px solid ${C.border}` }}>
+              <iframe
+                title="Notre salle"
+                width="100%"
+                height="300"
+                style={{ border: 0, display: 'block' }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  `${contact.address}, ${contact.street}, ${contact.city}`
+                )}&output=embed&hl=fr&z=15`}
+              />
             </div>
             <div style={{ background: C.offWhite, borderRadius: R.card, padding: '18px 20px' }}>
               <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, color: C.navy, marginBottom: 12 }}>Comment y accéder</div>
