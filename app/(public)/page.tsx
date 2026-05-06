@@ -1,6 +1,6 @@
 // Server Component — lit les paramètres hero et les sponsors directement depuis Prisma
 import { prisma } from '@/lib/prisma'
-import HomePageClient, { type HeroParams, type DbSponsor } from './HomePageClient'
+import HomePageClient, { type HeroParams, type HeroStat, type DbSponsor } from './HomePageClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,8 +12,16 @@ const HERO_DEFAULTS: HeroParams = {
   ctaSecondary: 'Découvrir le club',
 }
 
+const STAT_DEFAULTS: HeroStat[] = [
+  { valeur: '50+',  label: "Ans d'histoire" },
+  { valeur: '180+', label: 'Licenciés'      },
+  { valeur: '7',    label: 'Équipes'        },
+  { valeur: '12',   label: 'Titres'         },
+]
+
 export default async function HomePage() {
-  let hero = { ...HERO_DEFAULTS }
+  let hero       = { ...HERO_DEFAULTS }
+  let heroStats  = STAT_DEFAULTS
   let sponsors: DbSponsor[] = []
 
   try {
@@ -24,6 +32,7 @@ export default async function HomePage() {
 
     const d: Record<string, string> = {}
     rows.forEach(p => { d[p.cle] = p.valeur })
+
     hero = {
       badge:        d['hero.badge']        || hero.badge,
       title:        d['hero.title']        || hero.title,
@@ -32,10 +41,15 @@ export default async function HomePage() {
       ctaSecondary: d['hero.ctaSecondary'] || hero.ctaSecondary,
     }
 
+    heroStats = STAT_DEFAULTS.map((def, i) => ({
+      valeur: d[`hero.stat.${i + 1}.valeur`] || def.valeur,
+      label:  d[`hero.stat.${i + 1}.label`]  || def.label,
+    }))
+
     sponsors = sponsorRows
   } catch {
     // DB indisponible → valeurs par défaut, pas de sponsors
   }
 
-  return <HomePageClient hero={hero} sponsors={sponsors} />
+  return <HomePageClient hero={hero} heroStats={heroStats} sponsors={sponsors} />
 }

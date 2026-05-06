@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback } from 'react'
 import { A, ABtn, ACard, AInput, Divider, Icon, ImageUpload, PageHeader } from '@/components/admin/ui'
 
 const SECTIONS = [
-  { id: 'hero',    label: "Hero / Accueil",       icon: 'star'     },
-  { id: 'pages',   label: 'Badges des pages',      icon: 'tag'      },
-  { id: 'contact', label: 'Informations contact',  icon: 'mail'     },
-  { id: 'footer',  label: 'Pied de page',          icon: 'settings' },
-  { id: 'seo',     label: 'SEO & Métadonnées',     icon: 'search'   },
+  { id: 'hero',    label: "Hero / Accueil",          icon: 'star'     },
+  { id: 'stats',   label: 'Statistiques accueil',    icon: 'hash'     },
+  { id: 'pages',   label: 'Badges des pages',        icon: 'tag'      },
+  { id: 'contact', label: 'Informations contact',    icon: 'mail'     },
+  { id: 'footer',  label: 'Pied de page',            icon: 'settings' },
+  { id: 'seo',     label: 'SEO & Métadonnées',       icon: 'search'   },
 ]
 
 const DEFAULTS = {
@@ -17,6 +18,14 @@ const DEFAULTS = {
   'hero.subtitle':        "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
   'hero.ctaPrimary':      'Nous rejoindre',
   'hero.ctaSecondary':    'Découvrir le club',
+  'hero.stat.1.valeur':   '50+',
+  'hero.stat.1.label':    "Ans d'histoire",
+  'hero.stat.2.valeur':   '180+',
+  'hero.stat.2.label':    'Licenciés',
+  'hero.stat.3.valeur':   '7',
+  'hero.stat.3.label':    'Équipes',
+  'hero.stat.4.valeur':   '12',
+  'hero.stat.4.label':    'Titres',
   'equipes.badge':        'Saison 2024–2025',
   'calendrier.badge':     'Saison 2024–2025',
   'classement.badge':     'Saison 2024–2025',
@@ -130,6 +139,51 @@ export default function ParametresPage() {
                 <div style={{ display: 'flex', gap: 10 }}>
                   <span style={{ background: '#D42B2B', color: '#fff', padding: '8px 18px', borderRadius: A.r8, fontFamily: "'Barlow',sans-serif", fontWeight: 700, fontSize: 13 }}>{get('hero.ctaPrimary')}</span>
                   <span style={{ border: '1.5px solid rgba(255,255,255,0.35)', color: '#fff', padding: '8px 18px', borderRadius: A.r8, fontFamily: "'Barlow',sans-serif", fontWeight: 700, fontSize: 13 }}>{get('hero.ctaSecondary')}</span>
+                </div>
+              </div>
+            </ACard>
+          )}
+
+          {section === 'stats' && (
+            <ACard>
+              <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 18, color: A.textPri, marginBottom: 6 }}>{"Statistiques — Page d'accueil"}</div>
+              <p style={{ fontSize: 13, color: A.muted, marginBottom: 20, lineHeight: 1.6 }}>
+                Les 4 chiffres clés affichés sous le hero de la page d&apos;accueil (50+&nbsp;ANS, 180+&nbsp;LICENCIÉS, etc.).
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                {([1, 2, 3, 4] as const).map(i => (
+                  <div key={i} style={{ background: A.bg, borderRadius: A.r8, padding: '14px 16px' }}>
+                    <div style={{ fontSize: 11.5, fontWeight: 700, color: A.textSec, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.6 }}>
+                      Statistique {i}
+                    </div>
+                    <AInput
+                      label="Valeur"
+                      value={get(`hero.stat.${i}.valeur` as ParamKey)}
+                      onChange={e => set(`hero.stat.${i}.valeur` as ParamKey, e.target.value)}
+                      placeholder="ex. 50+"
+                    />
+                    <AInput
+                      label="Libellé"
+                      value={get(`hero.stat.${i}.label` as ParamKey)}
+                      onChange={e => set(`hero.stat.${i}.label` as ParamKey, e.target.value)}
+                      placeholder="ex. Ans d'histoire"
+                    />
+                  </div>
+                ))}
+              </div>
+              <Divider label="Aperçu" />
+              <div style={{ background: '#fff', border: `1px solid ${A.border}`, borderRadius: A.r8, overflow: 'hidden' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+                  {([1, 2, 3, 4] as const).map(i => (
+                    <div key={i} style={{ textAlign: 'center', padding: '22px 10px', borderRight: i < 4 ? `1px solid ${A.border}` : 'none' }}>
+                      <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 32, color: A.red, lineHeight: 1 }}>
+                        {get(`hero.stat.${i}.valeur` as ParamKey) || '—'}
+                      </div>
+                      <div style={{ color: A.muted, fontSize: 10.5, marginTop: 5, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>
+                        {get(`hero.stat.${i}.label` as ParamKey) || '—'}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </ACard>

@@ -18,6 +18,11 @@ export interface HeroParams {
   ctaSecondary: string
 }
 
+export interface HeroStat {
+  valeur: string
+  label:  string
+}
+
 function StatItem({ number, label }: { number: string; label: string }) {
   return (
     <div className="stats-bar-divider" style={{ textAlign: 'center', padding: '28px 16px', borderRight: `1px solid ${C.border}` }}>
@@ -38,14 +43,12 @@ function TeamMiniCard({ name, cat, color }: { name: string; cat: string; color: 
   )
 }
 
-const HERO_STATS = [['50+', "Ans d'histoire"], ['180+', 'Licenciés'], ['7', 'Équipes'], ['12', 'Titres']]
-
 function fmtDate(dateStr: string) {
   const d = new Date(dateStr)
   return { date: d.getDate().toString().padStart(2,'0'), day: d.toLocaleDateString('fr-FR',{month:'short'}).toUpperCase().replace('.','') }
 }
 
-export default function HomePageClient({ hero, sponsors }: { hero: HeroParams; sponsors: DbSponsor[] }) {
+export default function HomePageClient({ hero, heroStats, sponsors }: { hero: HeroParams; heroStats: HeroStat[]; sponsors: DbSponsor[] }) {
   const [matchs, setMatchs]     = useState<DbMatch[]>([])
   const [articles, setArticles] = useState<DbArticle[]>([])
   const [equipes, setEquipes]   = useState<DbEquipe[]>([])
@@ -93,7 +96,7 @@ export default function HomePageClient({ hero, sponsors }: { hero: HeroParams; s
       <div style={{ background: '#fff', borderBottom: `1px solid ${C.border}` }}>
         <div style={{ ...MAX_W, padding: '0 28px' }}>
           <div className="stats-bar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
-            {HERO_STATS.map(([n, l]) => <StatItem key={l} number={n} label={l} />)}
+            {heroStats.map(s => <StatItem key={s.label} number={s.valeur} label={s.label} />)}
           </div>
         </div>
       </div>
