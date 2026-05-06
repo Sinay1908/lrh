@@ -196,12 +196,12 @@
   },
   {
     "route": "/admin/faq",
-    "firstLoadUncompressedJsBytes": 596312,
+    "firstLoadUncompressedJsBytes": 596348,
     "firstLoadChunkPaths": [
       ".next/static/chunks/0x.73w57rn4ou.js",
       ".next/static/chunks/0i.l9589uvx0j.js",
       ".next/static/chunks/0n40e.01lj~d4.js",
-      ".next/static/chunks/0b~w23jhukp_b.js",
+      ".next/static/chunks/0q9jvvbz1w3m~.js",
       ".next/static/chunks/0pgo8h59a52ke.js",
       ".next/static/chunks/0dcu67gngfgpb.js",
       ".next/static/chunks/14l~.r2kq13je.js",

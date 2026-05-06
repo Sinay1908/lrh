@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/yanis/Desktop/Lyon%20Roller%20Hockey%20Final/lrh/app/admin/layout.tsx"],"sourcesContent":["import type { Metadata } from 'next'\n\nexport const metadata: Metadata = {\n  title: { template: '%s | Admin LRH', default: 'Administration | Lyon Roller Hockey' },\n}\n\nexport default function AdminRootLayout({ children }: { children: React.ReactNode }) {\n  return <>{children}</>\n}\n"],"names":["metadata","title","template","default","AdminRootLayout","children"],"mappings":";;;;;;;;AAEO,MAAMA,WAAqB;IAChCC,OAAO;QAAEC,UAAU;QAAkBC,SAAS;IAAsC;AACtF;AAEe,SAASC,gBAAgB,EAAEC,QAAQ,EAAiC;IACjF,qBAAO;kBAAGA;;AACZ"}}]
+}

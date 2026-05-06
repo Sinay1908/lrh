@@ -19,7 +19,10 @@ export default function FaqPage() {
     setLoading(true)
     try {
       const r = await fetch('/api/faq')
-      setItems(await r.json())
+      const data = await r.json()
+      setItems(Array.isArray(data) ? data : [])
+    } catch {
+      setItems([])
     } finally { setLoading(false) }
   }, [])
   useEffect(() => { load() }, [load])
