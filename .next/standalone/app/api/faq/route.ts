@@ -22,7 +22,9 @@ export async function POST(request: Request) {
       data: { question, reponse, ordre: ordre ?? 0, actif: true },
     })
     return NextResponse.json(item, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[FAQ POST]', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
