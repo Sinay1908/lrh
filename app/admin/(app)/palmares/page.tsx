@@ -11,7 +11,7 @@ interface StaffMembre  { id: number; nom: string; role: string; depuis: string |
 const SECTIONS = [
   { id: 'identite', label: 'Identité du club',  icon: 'star'     },
   { id: 'stats',    label: 'Statistiques',       icon: 'settings' },
-  { id: 'valeurs',  label: 'Nos valeurs',        icon: 'tag'      },
+  { id: 'valeurs',  label: 'Nos valeurs',        icon: 'heart'    },
   { id: 'palmares', label: 'Palmarès',           icon: 'star'     },
   { id: 'staff',    label: 'Staff technique',    icon: 'teams'    },
 ]
