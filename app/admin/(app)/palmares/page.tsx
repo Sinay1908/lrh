@@ -11,6 +11,7 @@ interface StaffMembre  { id: number; nom: string; role: string; depuis: string |
 const SECTIONS = [
   { id: 'identite', label: 'Identité du club',  icon: 'star'     },
   { id: 'stats',    label: 'Statistiques',       icon: 'settings' },
+  { id: 'valeurs',  label: 'Nos valeurs',        icon: 'tag'      },
   { id: 'palmares', label: 'Palmarès',           icon: 'star'     },
   { id: 'staff',    label: 'Staff technique',    icon: 'teams'    },
 ]
@@ -21,6 +22,13 @@ const DEF_IDENTITE = {
   'club.identite.para2':   "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.",
   'club.identite.imageUrl': '',
   'club.identite.caption':  "Photo de l'équipe — saison 2024-2025",
+}
+
+const DEF_VALEURS = {
+  'club.valeur.1.icon':  '🏆', 'club.valeur.1.titre': 'Excellence',   'club.valeur.1.desc': "Nous visons l'excellence sur et en dehors des terrains, avec des équipes compétitives à tous les niveaux.",
+  'club.valeur.2.icon':  '🤝', 'club.valeur.2.titre': 'Solidarité',   'club.valeur.2.desc': "L'esprit d'équipe est au cœur de notre projet. Chaque victoire est collective, chaque difficulté partagée.",
+  'club.valeur.3.icon':  '🌱', 'club.valeur.3.titre': 'Formation',    'club.valeur.3.desc': "Notre centre de formation accueille les jeunes dès 8 ans pour les initier et les faire progresser durablement.",
+  'club.valeur.4.icon': '🏙️', 'club.valeur.4.titre': 'Ancrage local','club.valeur.4.desc': "Fiers de représenter Lyon, nous sommes un acteur sportif et social de notre territoire depuis 50 ans.",
 }
 
 const DEF_STATS = {
@@ -93,6 +101,7 @@ export default function ClubAdminPage() {
         <div>
           {section === 'identite' && <IdentiteSection />}
           {section === 'stats'    && <StatsSection />}
+          {section === 'valeurs'  && <ValeursSection />}
           {section === 'palmares' && <PalmaresSection />}
           {section === 'staff'    && <StaffSection />}
         </div>
@@ -331,6 +340,123 @@ function StatsSection() {
             </div>
             <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
               {get(`club.stat.${i}.label`) || `Label ${i}`}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {error && (
+        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: A.r8, padding: '10px 14px', color: '#DC2626', fontSize: 13, fontWeight: 500, marginTop: 12 }}>
+          {error}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 16, alignItems: 'center' }}>
+        {saved && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: A.green, fontSize: 13.5, fontWeight: 600 }}>
+            <Icon name="check" size={15} color={A.green} /> Enregistré !
+          </div>
+        )}
+        <ABtn variant="navy" onClick={handleSave} disabled={saving}>
+          {saving ? 'Enregistrement…' : 'Enregistrer'}
+        </ABtn>
+      </div>
+    </ACard>
+  )
+}
+
+// ─── Nos Valeurs ─────────────────────────────────────────────────────────────
+function ValeursSection() {
+  const [values, setValues]   = useState(DEF_VALEURS)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving]   = useState(false)
+  const [saved, setSaved]     = useState(false)
+  const [error, setError]     = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/parametres?section=club')
+      .then(r => r.json())
+      .then((d: Record<string, string>) => {
+        setValues(prev => ({
+          ...prev,
+          ...Object.fromEntries(Object.entries(d).filter(([k]) => k.startsWith('club.valeur.'))),
+        }))
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const get = (k: string) => (values as Record<string, string>)[k] ?? ''
+  const set = (k: string, v: string) => setValues(prev => ({ ...prev, [k]: v }))
+
+  const handleSave = async () => {
+    setSaving(true); setError(null)
+    try {
+      const body: Record<string, { valeur: string; section: string }> = {}
+      Object.entries(values).forEach(([k, v]) => { body[k] = { valeur: v, section: 'club' } })
+      const res = await fetch('/api/parametres', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) { setError('Erreur lors de la sauvegarde'); return }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch { setError('Erreur réseau') } finally { setSaving(false) }
+  }
+
+  if (loading) return <ACard><div style={{ textAlign: 'center', padding: 40, color: A.muted }}>Chargement…</div></ACard>
+
+  return (
+    <ACard>
+      <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 18, color: A.textPri, marginBottom: 6 }}>
+        Nos valeurs
+      </div>
+      <p style={{ fontSize: 13, color: A.muted, marginBottom: 24, lineHeight: 1.6 }}>
+        Les 4 cartes affichées dans la section &quot;Ce qui nous unit&quot; de la page Le Club.
+      </p>
+
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} style={{ background: A.bg, borderRadius: A.r10, padding: '16px 18px', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <div style={{ fontSize: 28, lineHeight: 1 }}>{get(`club.valeur.${i}.icon`) || '—'}</div>
+            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, color: A.textPri }}>
+              Valeur {i}
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 12, marginBottom: 10 }}>
+            <AInput
+              label="Icône (emoji)"
+              value={get(`club.valeur.${i}.icon`)}
+              onChange={e => set(`club.valeur.${i}.icon`, e.target.value)}
+              placeholder="🏆"
+            />
+            <AInput
+              label="Titre"
+              value={get(`club.valeur.${i}.titre`)}
+              onChange={e => set(`club.valeur.${i}.titre`, e.target.value)}
+              placeholder="ex. Excellence"
+            />
+          </div>
+          <AInput
+            label="Description"
+            value={get(`club.valeur.${i}.desc`)}
+            onChange={e => set(`club.valeur.${i}.desc`, e.target.value)}
+            rows={2}
+            placeholder="Courte description de la valeur…"
+          />
+        </div>
+      ))}
+
+      {/* Aperçu */}
+      <Divider label="Aperçu" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} style={{ background: '#fff', borderRadius: A.r10, padding: '18px 14px', textAlign: 'center', border: `1px solid ${A.border}` }}>
+            <div style={{ fontSize: 26, marginBottom: 8 }}>{get(`club.valeur.${i}.icon`) || '—'}</div>
+            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 14, color: A.navy, textTransform: 'uppercase', marginBottom: 6 }}>
+              {get(`club.valeur.${i}.titre`) || `Valeur ${i}`}
+            </div>
+            <div style={{ fontSize: 12, color: A.muted, lineHeight: 1.5 }}>
+              {get(`club.valeur.${i}.desc`) || '—'}
             </div>
           </div>
         ))}

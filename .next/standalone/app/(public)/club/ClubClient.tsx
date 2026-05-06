@@ -90,10 +90,10 @@ function TimelineItem({ annee, titre, competition, description, align, dot }: {
   )
 }
 
-const VALUES = [
-  { icon: '🏆', title: 'Excellence', desc: "Nous visons l'excellence sur et en dehors des terrains, avec des équipes compétitives à tous les niveaux." },
-  { icon: '🤝', title: 'Solidarité', desc: "L'esprit d'équipe est au cœur de notre projet. Chaque victoire est collective, chaque difficulté partagée." },
-  { icon: '🌱', title: 'Formation',  desc: "Notre centre de formation accueille les jeunes dès 8 ans pour les initier et les faire progresser durablement." },
+const DEF_VALUES = [
+  { icon: '🏆', title: 'Excellence',   desc: "Nous visons l'excellence sur et en dehors des terrains, avec des équipes compétitives à tous les niveaux." },
+  { icon: '🤝', title: 'Solidarité',   desc: "L'esprit d'équipe est au cœur de notre projet. Chaque victoire est collective, chaque difficulté partagée." },
+  { icon: '🌱', title: 'Formation',    desc: "Notre centre de formation accueille les jeunes dès 8 ans pour les initier et les faire progresser durablement." },
   { icon: '🏙️', title: 'Ancrage local', desc: "Fiers de représenter Lyon, nous sommes un acteur sportif et social de notre territoire depuis 50 ans." },
 ]
 
@@ -118,6 +118,7 @@ export default function ClubClient({ badge }: { badge: string }) {
   const [palmares, setPalmares] = useState<PalmaresItem[]>([])
   const [identite, setIdentite] = useState(DEF_IDENTITE)
   const [stats, setStats]       = useState(DEF_STATS)
+  const [values, setValues]     = useState(DEF_VALUES)
 
   useEffect(() => {
     fetch('/api/staff')
@@ -140,6 +141,11 @@ export default function ClubClient({ badge }: { badge: string }) {
         setStats(prev => prev.map((s, i) => ({
           valeur: d[`club.stat.${i + 1}.valeur`] || s.valeur,
           label:  d[`club.stat.${i + 1}.label`]  || s.label,
+        })))
+        setValues(prev => prev.map((v, i) => ({
+          icon:  d[`club.valeur.${i + 1}.icon`]  || v.icon,
+          title: d[`club.valeur.${i + 1}.titre`] || v.title,
+          desc:  d[`club.valeur.${i + 1}.desc`]  || v.desc,
         })))
       })
       .catch(() => {})
@@ -216,7 +222,7 @@ export default function ClubClient({ badge }: { badge: string }) {
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Ce qui nous unit" title="Nos Valeurs" center />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 18 }}>
-            {VALUES.map(v => <ValueCard key={v.title} icon={v.icon} title={v.title} desc={v.desc} />)}
+            {values.map((v, i) => <ValueCard key={i} icon={v.icon} title={v.title} desc={v.desc} />)}
           </div>
         </div>
       </div>
