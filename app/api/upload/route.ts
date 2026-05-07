@@ -32,8 +32,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: `/api/files/${name}` })
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    console.error('[POST /api/upload]', msg)
-    return NextResponse.json({ error: msg }, { status: 500 })
+    console.error('[POST /api/upload]', e instanceof Error ? e.message : String(e))
+    return NextResponse.json({ error: 'Erreur lors de l\'enregistrement du fichier' }, { status: 500 })
   }
 }

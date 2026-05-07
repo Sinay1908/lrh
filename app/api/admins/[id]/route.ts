@@ -21,8 +21,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       select: { id: true, email: true, nom: true, createdAt: true },
     })
     return NextResponse.json(admin)
-  } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
 
@@ -35,7 +35,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     }
     await prisma.admin.delete({ where: { id: Number(id) } })
     return NextResponse.json({ success: true })
-  } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

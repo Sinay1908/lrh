@@ -9,8 +9,8 @@ export async function GET() {
       orderBy: { createdAt: 'asc' },
     })
     return NextResponse.json(admins)
-  } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json(admin, { status: 201 })
-  } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
