@@ -42,7 +42,6 @@ const DEFAULTS = {
   'footer.description':   "Club de roller hockey lyonnais fondé en 1974. Passion, sport et esprit d'équipe depuis plus de 50 ans.",
   'footer.facebook':      'https://facebook.com/lyonrollerhockey',
   'footer.instagram':     'https://instagram.com/lyonrollerhockey',
-  'footer.twitter':       '',
   'seo.title':            'Lyon Roller Hockey — Les Roads',
   'seo.description':      "Club de roller hockey de Lyon fondé en 1974. Équipes de Nationale 1 à la catégorie Loisir. Inscriptions ouvertes.",
 }
@@ -227,7 +226,6 @@ export default function ParametresPage() {
               <Divider label="Réseaux sociaux" />
               <AInput label="Facebook"   icon="link" value={get('footer.facebook')}  onChange={e => set('footer.facebook', e.target.value)}  placeholder="https://facebook.com/..." />
               <AInput label="Instagram"  icon="link" value={get('footer.instagram')} onChange={e => set('footer.instagram', e.target.value)} placeholder="https://instagram.com/..." />
-              <AInput label="X / Twitter" icon="link" value={get('footer.twitter')} onChange={e => set('footer.twitter', e.target.value)}   placeholder="https://x.com/..." />
             </ACard>
           )}
 
