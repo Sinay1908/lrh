@@ -108,7 +108,7 @@ export default function ContactClient({ badge, faqs }: { badge: string; faqs: Fa
 
   return (
     <div>
-      <PageHero badge={badge} title="Contactez" titleAccent="les Aigles"
+      <PageHero badge={badge} title="Contactez" titleAccent="Les Roads"
         subtitle="Une question, une demande d'inscription ou un partenariat ? Notre équipe vous répond dans les 48 heures."
         cta="S'inscrire au club" ctaHref="/inscription" />
 

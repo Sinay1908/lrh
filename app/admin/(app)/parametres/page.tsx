@@ -15,7 +15,7 @@ const SECTIONS = [
 const DEFAULTS = {
   'hero.badge':           'Saison 2024–2025',
   'hero.title':           'La Passion du Roller Hockey',
-  'hero.subtitle':        "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
+  'hero.subtitle':        "Depuis 1974, Les Roads défendent les couleurs du roller hockey français avec passion et ambition.",
   'hero.ctaPrimary':      'Nous rejoindre',
   'hero.ctaSecondary':    'Découvrir le club',
   'hero.stat.1.valeur':   '50+',
@@ -43,7 +43,7 @@ const DEFAULTS = {
   'footer.facebook':      'https://facebook.com/lyonrollerhockey',
   'footer.instagram':     'https://instagram.com/lyonrollerhockey',
   'footer.twitter':       '',
-  'seo.title':            'Lyon Roller Hockey — Les Aigles de Lyon',
+  'seo.title':            'Lyon Roller Hockey — Les Roads',
   'seo.description':      "Club de roller hockey de Lyon fondé en 1974. Équipes de Nationale 1 à la catégorie Loisir. Inscriptions ouvertes.",
 }
 

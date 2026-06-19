@@ -4,7 +4,7 @@ import './globals.css'
 // Lecture des métadonnées SEO depuis la DB (server component — revalidé toutes les 60s)
 async function getSeoParams(): Promise<{ title: string; description: string }> {
   const defaults = {
-    title:       'Lyon Roller Hockey — Les Aigles de Lyon',
+    title:       'Lyon Roller Hockey — Les Roads',
     description: "Club de roller hockey lyonnais fondé en 1974. Inscriptions ouvertes pour la saison 2025-2026.",
   }
   try {

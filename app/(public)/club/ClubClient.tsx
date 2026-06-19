@@ -99,7 +99,7 @@ const DEF_VALUES = [
 
 const DEF_IDENTITE = {
   para1:    "Lyon Roller Hockey est l'un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l'appartenance à une vraie communauté sportive.",
-  para2:    "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.",
+  para2:    "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, Les Roads continuent de porter haut les couleurs du roller hockey français.",
   imageUrl: '',
   caption:  "Photo de l'équipe — saison 2024-2025",
 }
@@ -162,7 +162,7 @@ export default function ClubClient({ badge }: { badge: string }) {
         <div style={{ ...MAX_W }}>
           <div className="rsp-2col">
             <div>
-              <SectionHeader label="Notre identité" title="Les Aigles de Lyon" />
+              <SectionHeader label="Notre identité" title="Les Roads" />
               <p style={{ color: C.muted, fontSize: 15.5, lineHeight: 1.8, marginBottom: 18 }}>
                 {identite.para1}
               </p>
@@ -203,7 +203,7 @@ export default function ClubClient({ badge }: { badge: string }) {
       <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           <SectionHeader label="Notre parcours" title="Notre Palmarès" center
-            subtitle="Les grandes étapes qui ont forgé l'identité des Aigles de Lyon." />
+            subtitle="Les grandes étapes qui ont forgé l'identité des Roads." />
           {palmares.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 0', color: C.muted }}>Le palmarès sera mis à jour prochainement.</div>
           ) : (

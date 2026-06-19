@@ -59,7 +59,7 @@ export default function BoutiqueClient({ badge }: { badge: string }) {
 
   return (
     <div>
-      <PageHero badge={badge} title="La Boutique" titleAccent="des Aigles"
+      <PageHero badge={badge} title="La Boutique" titleAccent="des Roads"
         subtitle="Portez les couleurs de Lyon Roller Hockey — maillots, textile et accessoires officiels du club." />
 
       {notification && (

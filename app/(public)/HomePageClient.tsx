@@ -128,7 +128,7 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
       {/* ── ACTUALITÉS ── */}
       <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
-          <SectionHeader label="Actualités" title="Les Dernières Nouvelles" subtitle="Résultats, annonces et vie du club — toute l'actualité des Aigles de Lyon." center />
+          <SectionHeader label="Actualités" title="Les Dernières Nouvelles" subtitle="Résultats, annonces et vie du club — toute l'actualité des Roads." center />
           {articles.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '32px 0', color: C.muted }}>Aucune actualité publiée pour le moment.</div>
           ) : (
@@ -198,7 +198,7 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
       )}
 
       {/* ── CTA ── */}
-      <CTABanner title="Rejoignez les Aigles de Lyon" subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !" btnLabel="S'inscrire maintenant" btnHref="/inscription" />
+      <CTABanner title="Rejoignez Les Roads" subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !" btnLabel="S'inscrire maintenant" btnHref="/inscription" />
     </div>
   )
 }

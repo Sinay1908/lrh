@@ -71,7 +71,7 @@ export default function CalendrierClient({ badge }: { badge: string }) {
   return (
     <div>
       <PageHero badge={badge} title="Calendrier &" titleAccent="Résultats"
-        subtitle="Tous les matchs des Aigles de Lyon, compétition par compétition." />
+        subtitle="Tous les matchs des Roads, compétition par compétition." />
 
       <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>

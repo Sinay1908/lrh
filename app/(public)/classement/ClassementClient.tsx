@@ -48,7 +48,7 @@ export default function ClassementClient({ badge }: { badge: string }) {
   return (
     <div>
       <PageHero badge={badge} title="Classement" titleAccent="General"
-        subtitle="La position des Aigles de Lyon dans toutes les compétitions." />
+        subtitle="La position des Roads dans toutes les compétitions." />
       <div style={{ background: C.offWhite, padding: SECTION_PAD }} className="rsp-section">
         <div style={{ ...MAX_W }}>
           {loading ? (

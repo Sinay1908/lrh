@@ -19,7 +19,7 @@ const SECTIONS = [
 // ─── Valeurs par défaut ───────────────────────────────────────────────────────
 const DEF_IDENTITE = {
   'club.identite.para1':   "Lyon Roller Hockey est l'un des clubs de roller hockey les plus historiques de France. Fondé en 1974 dans le 5e arrondissement de Lyon, le club a su traverser les décennies en construisant une identité forte, fondée sur la compétition, la formation et l'appartenance à une vraie communauté sportive.",
-  'club.identite.para2':   "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, les Aigles continuent de porter haut les couleurs du roller hockey français.",
+  'club.identite.para2':   "Aujourd'hui, avec plus de 180 licenciés, 7 équipes et un ancrage fort dans la métropole lyonnaise, Les Roads continuent de porter haut les couleurs du roller hockey français.",
   'club.identite.imageUrl': '',
   'club.identite.caption':  "Photo de l'équipe — saison 2024-2025",
 }

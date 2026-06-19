@@ -115,7 +115,7 @@ export default function InscriptionPageClient({ tarifs, badge }: { tarifs: Tarif
 
   return (
     <div>
-      <PageHero badge={badge} title="Rejoignez" titleAccent="les Aigles"
+      <PageHero badge={badge} title="Rejoignez" titleAccent="Les Roads"
         subtitle="La saison 2025-2026 approche. Rejoignez Lyon Roller Hockey dès maintenant — tout niveau, tout âge." />
 
       {/* ── AVANTAGES ── */}

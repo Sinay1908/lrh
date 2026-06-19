@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 const HERO_DEFAULTS: HeroParams = {
   badge:        'Saison 2024 – 2025',
   title:        'La Passion du Roller Hockey',
-  subtitle:     "Depuis 1974, les Aigles de Lyon défendent les couleurs du roller hockey français avec passion et ambition.",
+  subtitle:     "Depuis 1974, Les Roads défendent les couleurs du roller hockey français avec passion et ambition.",
   ctaPrimary:   'Nous rejoindre',
   ctaSecondary: 'Découvrir le club',
 }
