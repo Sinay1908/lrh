@@ -49,9 +49,10 @@ function fmtDate(dateStr: string) {
 }
 
 export default function HomePageClient({ hero, heroStats, sponsors }: { hero: HeroParams; heroStats: HeroStat[]; sponsors: DbSponsor[] }) {
-  const [matchs, setMatchs]     = useState<DbMatch[]>([])
-  const [articles, setArticles] = useState<DbArticle[]>([])
-  const [equipes, setEquipes]   = useState<DbEquipe[]>([])
+  const [matchs, setMatchs]           = useState<DbMatch[]>([])
+  const [articles, setArticles]       = useState<DbArticle[]>([])
+  const [equipes, setEquipes]         = useState<DbEquipe[]>([])
+  const [selectedArticle, setSelected] = useState<DbArticle | null>(null)
 
   useEffect(() => {
     fetch('/api/matchs?statut=upcoming').then(r=>r.json()).then(data => setMatchs(Array.isArray(data) ? data.slice(0,3) : [])).catch(()=>{})
@@ -136,7 +137,11 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
               {articles.map(a => {
                 const dateStr = a.publishedAt || a.createdAt
                 const meta = new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
-                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || a.contenu.substring(0, 160) + '…'} imageUrl={a.imageUrl} href={'/actualites/' + a.slug} />
+                return (
+                  <div key={a.id} onClick={() => setSelected(a)} style={{ cursor: 'pointer' }}>
+                    <ContentCard badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || a.contenu.substring(0, 160) + '…'} imageUrl={a.imageUrl} href="placeholder" />
+                  </div>
+                )
               })}
             </div>
           )}
@@ -199,6 +204,54 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
 
       {/* ── CTA ── */}
       <CTABanner title="Rejoignez Les Roads" subtitle="Inscriptions ouvertes pour la saison 2025-2026. Tout niveau, tout âge — venez découvrir le roller hockey !" btnLabel="S'inscrire maintenant" btnHref="/inscription" />
+
+      {/* ── MODALE ARTICLE ── */}
+      {selectedArticle && (
+        <div onClick={() => setSelected(null)}
+          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(13,33,80,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 16px' }}>
+          <div onClick={e => e.stopPropagation()}
+            style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 680, maxHeight: '88vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.3)' }}>
+
+            {/* Image + header */}
+            <div style={{ position: 'relative', height: 200, background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`, flexShrink: 0 }}>
+              {selectedArticle.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={selectedArticle.imageUrl} alt={selectedArticle.titre}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.45 }} />
+              )}
+              <button onClick={() => setSelected(null)}
+                style={{ position: 'absolute', top: 14, right: 14, width: 34, height: 34, borderRadius: '50%', background: 'rgba(0,0,0,0.45)', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, zIndex: 2 }}>
+                ×
+              </button>
+              <div style={{ position: 'absolute', bottom: 18, left: 22, right: 22, zIndex: 2 }}>
+                {selectedArticle.categorie && (
+                  <span style={{ background: C.red, color: '#fff', padding: '3px 10px', borderRadius: 4, fontSize: 10, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif", letterSpacing: 1.5, textTransform: 'uppercase', display: 'inline-block', marginBottom: 8 }}>
+                    {selectedArticle.categorie}
+                  </span>
+                )}
+                <h2 style={{ color: '#fff', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: 'clamp(22px,4vw,32px)', margin: 0, lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                  {selectedArticle.titre}
+                </h2>
+              </div>
+            </div>
+
+            {/* Corps scrollable */}
+            <div style={{ overflowY: 'auto', padding: '28px 28px 32px' }}>
+              <div style={{ color: C.muted, fontSize: 12.5, marginBottom: 18 }}>
+                {new Date(selectedArticle.publishedAt || selectedArticle.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+              </div>
+              {selectedArticle.extrait && (
+                <p style={{ color: C.navy, fontSize: 16, fontWeight: 600, lineHeight: 1.65, margin: '0 0 22px', paddingBottom: 22, borderBottom: `1px solid ${C.border}` }}>
+                  {selectedArticle.extrait}
+                </p>
+              )}
+              <div style={{ color: '#374151', fontSize: 15, lineHeight: 1.85, whiteSpace: 'pre-wrap' }}>
+                {selectedArticle.contenu}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
