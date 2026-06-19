@@ -6,17 +6,21 @@ import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeade
 interface Ligne  { id: number; competition: string; saison: string; position: number; equipe: string; joues: number; gagnes: number; nuls: number; perdus: number; bpour: number; bcontre: number; points: number; isLyon: boolean }
 interface Equipe { id: number; nom: string; actif: boolean }
 
-const INIT = { competition: '', saison: '2024-2025', position: '1', equipe: '', joues: '0', gagnes: '0', nuls: '0', perdus: '0', bpour: '0', bcontre: '0', points: '0', isLyon: false }
+const CURRENT_YEAR = String(new Date().getFullYear())
+const INIT = { competition: '', saison: CURRENT_YEAR, position: '1', equipe: '', joues: '0', gagnes: '0', nuls: '0', perdus: '0', bpour: '0', bcontre: '0', points: '0', isLyon: false }
 
 export default function ClassementPage() {
-  const [items, setItems]           = useState<Ligne[]>([])
-  const [equipes, setEquipes]       = useState<Equipe[]>([])
-  const [loading, setLoading]       = useState(true)
-  const [modal, setModal]           = useState(false)
-  const [editing, setEditing]       = useState<Ligne | null>(null)
-  const [form, setForm]             = useState(INIT)
-  const [saving, setSaving]         = useState(false)
-  const [filterComp, setFilterComp] = useState('')
+  const [items, setItems]                   = useState<Ligne[]>([])
+  const [equipes, setEquipes]               = useState<Equipe[]>([])
+  const [loading, setLoading]               = useState(true)
+  const [modal, setModal]                   = useState(false)
+  const [editing, setEditing]               = useState<Ligne | null>(null)
+  const [form, setForm]                     = useState(INIT)
+  const [saving, setSaving]                 = useState(false)
+  const [filterSaison, setFilterSaison]     = useState(CURRENT_YEAR)
+  const [filterComp, setFilterComp]         = useState('')
+  const [showNewSaison, setShowNewSaison]   = useState(false)
+  const [newSaisonInput, setNewSaisonInput] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -24,25 +28,30 @@ export default function ClassementPage() {
       const [r, eq] = await Promise.all([fetch('/api/classement'), fetch('/api/equipes')])
       const classData = await r.json()
       const eqData    = await eq.json()
-      setItems(classData)
-      const actifs = Array.isArray(eqData) ? eqData.filter((e: Equipe) => e.actif) : []
-      setEquipes(actifs)
-      // set default filter to first available competition
-      if (filterComp === '' && classData.length > 0) setFilterComp(classData[0].competition)
+      setItems(Array.isArray(classData) ? classData : [])
+      setEquipes(Array.isArray(eqData) ? eqData.filter((e: Equipe) => e.actif) : [])
     } finally { setLoading(false) }
-  }, [filterComp])
+  }, [])
 
   useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const competitions = [...new Set(items.map(i => i.competition))]
-  const filtered     = items.filter(i => i.competition === filterComp).sort((a, b) => a.position - b.position)
+  // Saisons triées desc + toujours inclure l'année courante
+  const saisonsInDB = [...new Set(items.map(i => i.saison))].sort((a, b) => b.localeCompare(a))
+  const saisons = saisonsInDB.includes(CURRENT_YEAR) ? saisonsInDB : [CURRENT_YEAR, ...saisonsInDB]
 
-  // Options compétition = noms des équipes actives
+  const activeSaison     = saisons.includes(filterSaison) ? filterSaison : saisons[0]
+  const itemsForSaison   = items.filter(i => i.saison === activeSaison)
+  const competitions     = [...new Set(itemsForSaison.map(i => i.competition))]
+  const activeComp       = competitions.includes(filterComp) ? filterComp : (competitions[0] ?? '')
+  const filtered         = itemsForSaison.filter(i => i.competition === activeComp).sort((a, b) => a.position - b.position)
+
   const compOptions = equipes.map(e => ({ value: e.nom, label: e.nom }))
+
+  const switchSaison = (s: string) => { setFilterSaison(s); setFilterComp('') }
 
   const openCreate = () => {
     setEditing(null)
-    setForm({ ...INIT, competition: filterComp || (equipes[0]?.nom ?? '') })
+    setForm({ ...INIT, saison: activeSaison, competition: activeComp || (equipes[0]?.nom ?? '') })
     setModal(true)
   }
   const openEdit = (l: Ligne) => {
@@ -66,6 +75,14 @@ export default function ClassementPage() {
     await fetch(`/api/classement/${id}`, { method: 'DELETE' }); await load()
   }
 
+  const handleAddSaison = () => {
+    const y = newSaisonInput.trim()
+    if (!y || !/^\d{4}$/.test(y)) return
+    switchSaison(y)
+    setShowNewSaison(false)
+    setNewSaisonInput('')
+  }
+
   const cols: Col[] = [
     { label: '#', key: 'position', right: true, render: l => (
       <div style={{ width: 28, height: 28, borderRadius: 4, background: (l as Ligne).isLyon ? A.red : A.bg, color: (l as Ligne).isLyon ? '#fff' : A.textPri, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 15, marginLeft: 'auto' }}>
@@ -77,13 +94,13 @@ export default function ClassementPage() {
         {l.equipe as string}{(l as Ligne).isLyon ? ' ★' : ''}
       </span>
     )},
-    { label: 'J',   key: 'joues',    right: true },
-    { label: 'G',   key: 'gagnes',   right: true },
-    { label: 'N',   key: 'nuls',     right: true },
-    { label: 'P',   key: 'perdus',   right: true },
-    { label: 'BP',  key: 'bpour',    right: true },
-    { label: 'BC',  key: 'bcontre',  right: true },
-    { label: 'Pts', key: 'points',   right: true, render: l => (
+    { label: 'J',   key: 'joues',   right: true },
+    { label: 'G',   key: 'gagnes',  right: true },
+    { label: 'N',   key: 'nuls',    right: true },
+    { label: 'P',   key: 'perdus',  right: true },
+    { label: 'BP',  key: 'bpour',   right: true },
+    { label: 'BC',  key: 'bcontre', right: true },
+    { label: 'Pts', key: 'points',  right: true, render: l => (
       <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 16, color: A.navy }}>{l.points as number}</span>
     )},
     { label: '', key: 'actions', right: true, render: l => (
@@ -98,11 +115,49 @@ export default function ClassementPage() {
     <div>
       <PageHeader title="Classement" subtitle="Gérez les classements de toutes les compétitions" action="Ajouter une ligne" actionIcon="plus" onAction={openCreate} breadcrumb="Classement" />
 
+      {/* ── Sélecteur de saison ── */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 12, fontWeight: 600, color: A.muted, letterSpacing: 1, textTransform: 'uppercase', marginRight: 4 }}>Saison</span>
+        {saisons.map(s => (
+          <button key={s} onClick={() => switchSaison(s)}
+            style={{ background: activeSaison === s ? A.navy : A.bg, color: activeSaison === s ? '#fff' : A.textSec, border: `1px solid ${activeSaison === s ? A.navy : A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, transition: 'all 0.15s' }}>
+            {s}
+          </button>
+        ))}
+        {showNewSaison ? (
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <input
+              value={newSaisonInput}
+              onChange={e => setNewSaisonInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleAddSaison()}
+              placeholder="ex. 2027"
+              maxLength={4}
+              style={{ width: 76, padding: '6px 10px', border: `1px solid ${A.border}`, borderRadius: A.r6, fontSize: 14, fontFamily: "'Barlow',sans-serif", outline: 'none' }}
+              autoFocus
+            />
+            <button onClick={handleAddSaison}
+              style={{ background: A.navy, color: '#fff', border: 'none', padding: '6px 12px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+              OK
+            </button>
+            <button onClick={() => { setShowNewSaison(false); setNewSaisonInput('') }}
+              style={{ background: 'transparent', color: A.muted, border: `1px solid ${A.border}`, padding: '6px 10px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13 }}>
+              ×
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setShowNewSaison(true)}
+            style={{ background: 'transparent', color: A.textSec, border: `1px dashed ${A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 5 }}>
+            + Nouvelle saison
+          </button>
+        )}
+      </div>
+
+      {/* ── Onglets compétitions (dans la saison active) ── */}
       {competitions.length > 1 && (
         <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
           {competitions.map(c => (
             <button key={c} onClick={() => setFilterComp(c)}
-              style={{ background: filterComp === c ? A.navy : A.bg, color: filterComp === c ? '#fff' : A.textSec, border: `1px solid ${filterComp === c ? A.navy : A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontFamily: "'Barlow',sans-serif", fontWeight: 500, fontSize: 13, transition: 'all 0.15s' }}>
+              style={{ background: activeComp === c ? A.navy : A.bg, color: activeComp === c ? '#fff' : A.textSec, border: `1px solid ${activeComp === c ? A.navy : A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontFamily: "'Barlow',sans-serif", fontWeight: 500, fontSize: 13, transition: 'all 0.15s' }}>
               {c}
             </button>
           ))}
@@ -111,28 +166,35 @@ export default function ClassementPage() {
 
       <ACard noPad>
         <div style={{ padding: '14px 18px', borderBottom: `1px solid ${A.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, color: A.textPri }}>{filterComp || 'Classement'}</div>
+          <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, color: A.textPri }}>
+            {activeComp || activeSaison}
+            <span style={{ marginLeft: 10, fontSize: 12, fontWeight: 500, color: A.muted }}>Saison {activeSaison}</span>
+          </div>
           <div style={{ color: A.muted, fontSize: 12.5 }}>{filtered.length} équipe{filtered.length !== 1 ? 's' : ''}</div>
         </div>
         {loading
           ? <div style={{ textAlign: 'center', padding: 48, color: A.muted }}>Chargement…</div>
-          : <ATable cols={cols} rows={filtered as unknown as Record<string, unknown>[]} />
+          : filtered.length === 0
+            ? <div style={{ textAlign: 'center', padding: 48, color: A.muted }}>Aucune ligne pour cette saison. Cliquez sur &quot;Ajouter une ligne&quot; pour commencer.</div>
+            : <ATable cols={cols} rows={filtered as unknown as Record<string, unknown>[]} />
         }
       </ACard>
 
-      <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier la ligne' : 'Nouvelle ligne de classement'} width={580}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
+      <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier la ligne' : `Nouvelle ligne — Saison ${form.saison}`} width={580}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
           <ASelect
             label="Compétition"
             value={form.competition}
             onChange={e => setForm({ ...form, competition: e.target.value })}
             options={compOptions.length > 0 ? compOptions : [{ value: '', label: '— Aucune équipe créée —' }]}
           />
-          <AInput label="Saison"   value={form.saison}    onChange={e => setForm({ ...form, saison: e.target.value })}    placeholder="2024-2025" />
           <AInput label="Position" type="number" value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} />
         </div>
+        <div style={{ background: A.bg, border: `1px solid ${A.border}`, borderRadius: A.r6, padding: '8px 12px', fontSize: 13, color: A.muted }}>
+          Saison : <strong style={{ color: A.textPri }}>{form.saison}</strong>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
-          <AInput label="Nom de l'équipe" value={form.equipe} onChange={e => setForm({ ...form, equipe: e.target.value })} required placeholder="ex. Lyon RH" />
+          <AInput label="Nom de l'équipe adversaire" value={form.equipe} onChange={e => setForm({ ...form, equipe: e.target.value })} required placeholder="ex. Lyon RH" />
           <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 500, color: A.textSec }}>
               <input type="checkbox" checked={form.isLyon} onChange={e => setForm({ ...form, isLyon: e.target.checked })} style={{ width: 16, height: 16 }} />
