@@ -22,6 +22,7 @@ export default function ClassementPage() {
   const [editing, setEditing]               = useState<Ligne | null>(null)
   const [form, setForm]                     = useState(INIT)
   const [saving, setSaving]                 = useState(false)
+  const [saveError, setSaveError]           = useState<string | null>(null)
   const [filterSaison, setFilterSaison]     = useState(CURRENT_SAISON)
   const [filterComp, setFilterComp]         = useState('')
   const [showNewSaison, setShowNewSaison]   = useState(false)
@@ -66,13 +67,20 @@ export default function ClassementPage() {
   }
 
   const handleSave = async () => {
+    setSaveError(null)
+    if (!form.competition.trim()) { setSaveError('La compétition est requise.'); return }
+    if (!form.equipe.trim())      { setSaveError("Le nom de l'équipe est requis."); return }
     setSaving(true)
     try {
       const body = { ...form, position: Number(form.position), joues: Number(form.joues), gagnes: Number(form.gagnes), nuls: Number(form.nuls), perdus: Number(form.perdus), bpour: Number(form.bpour), bcontre: Number(form.bcontre), points: Number(form.points) }
-      if (editing) await fetch(`/api/classement/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      else         await fetch('/api/classement', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      await load(); setModal(false)
-    } finally { setSaving(false) }
+      let res: Response
+      if (editing) res = await fetch(`/api/classement/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      else         res = await fetch('/api/classement', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      if (!res.ok) { const d = await res.json(); setSaveError(d.error || 'Erreur lors de la sauvegarde'); return }
+      await load()
+      setModal(false)
+      setFilterSaison(form.saison)
+    } catch { setSaveError('Erreur réseau') } finally { setSaving(false) }
   }
 
   const handleDelete = async (id: number) => {
@@ -203,14 +211,24 @@ export default function ClassementPage() {
         }
       </ACard>
 
-      <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier la ligne' : `Nouvelle ligne — Saison ${form.saison}`} width={580}>
+      <Modal open={modal} onClose={() => { setModal(false); setSaveError(null) }} title={editing ? 'Modifier la ligne' : `Nouvelle ligne — Saison ${form.saison}`} width={580}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
-          <ASelect
-            label="Compétition"
-            value={form.competition}
-            onChange={e => setForm({ ...form, competition: e.target.value })}
-            options={compOptions.length > 0 ? compOptions : [{ value: '', label: '— Aucune équipe créée —' }]}
-          />
+          {compOptions.length > 0 ? (
+            <ASelect
+              label="Compétition"
+              value={form.competition}
+              onChange={e => setForm({ ...form, competition: e.target.value })}
+              options={compOptions}
+            />
+          ) : (
+            <AInput
+              label="Compétition"
+              value={form.competition}
+              onChange={e => setForm({ ...form, competition: e.target.value })}
+              placeholder="ex. Nationale 1"
+              required
+            />
+          )}
           <AInput label="Position" type="number" value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} />
         </div>
         <div style={{ background: A.bg, border: `1px solid ${A.border}`, borderRadius: A.r6, padding: '8px 12px', fontSize: 13, color: A.muted }}>
@@ -230,9 +248,9 @@ export default function ClassementPage() {
             <AInput key={k} label={l} type="number" value={form[k as keyof typeof form] as string} onChange={e => setForm({ ...form, [k]: e.target.value })} />
           ))}
         </div>
-        {equipes.length === 0 && (
-          <div style={{ background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: A.r8, padding: '10px 14px', color: '#9A3412', fontSize: 13 }}>
-            ⚠️ Aucune équipe créée. <strong>Ajoutez d&apos;abord des équipes</strong> dans la section &quot;Équipes&quot; pour les retrouver ici.
+        {saveError && (
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: A.r8, padding: '10px 14px', color: '#DC2626', fontSize: 13, fontWeight: 500 }}>
+            {saveError}
           </div>
         )}
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6 }}>
