@@ -41,7 +41,7 @@ export default function EquipesClient({ badge }: { badge: string }) {
 
   const groupes: Record<string, Equipe[]> = {}
   equipes.forEach(e => { if (!groupes[e.groupe]) groupes[e.groupe] = []; groupes[e.groupe].push(e) })
-  const groupeLabels: Record<string, string> = { senior: 'Équipes Seniors', jeunes: 'Équipes Jeunes', loisir: 'Loisir & Détente' }
+  const groupeLabels: Record<string, string> = { seniors: 'Équipes Seniors', jeunesses: 'Équipes Jeunesses', senior: 'Équipes Seniors', jeunes: 'Équipes Jeunesses' }
 
   return (
     <div>

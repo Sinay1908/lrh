@@ -5,7 +5,7 @@ import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeade
 
 interface Equipe { id: number; nom: string; niveau: string; categorie: string; groupe: string; couleur: string; horaire: string | null; coach: string | null; nbJoueurs: number; actif: boolean }
 
-const INIT = { nom: '', niveau: '', categorie: 'Senior', groupe: 'senior', couleur: '#0D2150', horaire: '', coach: '', nbJoueurs: '0', actif: true }
+const INIT = { nom: '', niveau: '', categorie: 'Régional', groupe: 'seniors', couleur: '#0D2150', horaire: '', coach: '', nbJoueurs: '0', actif: true }
 
 export default function EquipesPage() {
   const [equipes, setEquipes]   = useState<Equipe[]>([])
@@ -99,9 +99,19 @@ export default function EquipesPage() {
         </div>
         <div className="rsp-form-2col">
           <ASelect label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}
-            options={[{value:'Senior',label:'Senior'},{value:'Jeunes',label:'Jeunes'},{value:'Loisir',label:'Loisir'}]} />
+            options={[
+              {value:'Ecole de hockey',label:'Ecole de hockey'},
+              {value:'U7', label:'U7'}, {value:'U9', label:'U9'}, {value:'U11',label:'U11'},
+              {value:'U13',label:'U13'}, {value:'U15',label:'U15'}, {value:'U17',label:'U17'}, {value:'U20',label:'U20'},
+              {value:'Régional',     label:'Régional'},
+              {value:'Pré-national', label:'Pré-national'},
+              {value:'National 3',   label:'National 3'},
+              {value:'National 2',   label:'National 2'},
+              {value:'National 1',   label:'National 1'},
+              {value:'Elite',        label:'Elite'},
+            ]} />
           <ASelect label="Groupe" value={form.groupe} onChange={e => setForm({ ...form, groupe: e.target.value })}
-            options={[{value:'senior',label:'Senior'},{value:'jeunes',label:'Jeunes'},{value:'loisir',label:'Loisir'}]} />
+            options={[{value:'seniors',label:'Seniors'},{value:'jeunesses',label:'Jeunesses'}]} />
         </div>
         <div className="rsp-form-2col">
           <AInput label="Coach" value={form.coach} onChange={e => setForm({ ...form, coach: e.target.value })} placeholder="Nom du coach" />
