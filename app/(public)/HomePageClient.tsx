@@ -139,7 +139,7 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
                 const meta = new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
                 return (
                   <div key={a.id} onClick={() => setSelected(a)} style={{ cursor: 'pointer' }}>
-                    <ContentCard badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || a.contenu.substring(0, 160) + '…'} imageUrl={a.imageUrl} href="placeholder" />
+                    <ContentCard badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || a.contenu.substring(0, 160) + '…'} imageUrl={a.imageUrl} showReadMore />
                   </div>
                 )
               })}

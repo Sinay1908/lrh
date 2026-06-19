@@ -244,14 +244,15 @@ export function StatBlock({ number, label, dark }: { number: string; label: stri
 }
 
 // ── ContentCard ───────────────────────────────────────────────────────────────
-export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, imageUrl }: {
-  badge?:      string
-  badgeColor?: string
-  title:       string
-  excerpt?:    string
-  meta?:       string
-  href?:       string
-  imageUrl?:   string | null
+export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, imageUrl, showReadMore }: {
+  badge?:        string
+  badgeColor?:   string
+  title:         string
+  excerpt?:      string
+  meta?:         string
+  href?:         string
+  imageUrl?:     string | null
+  showReadMore?: boolean
 }) {
   const [hov, setHov] = useState(false)
   const Tag = href ? 'a' : 'div'
@@ -261,7 +262,7 @@ export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, ima
         display: 'block', background: '#fff', borderRadius: R.card, overflow: 'hidden',
         boxShadow: hov ? SH.cardHover : SH.card,
         transition: 'all 0.25s', transform: hov ? 'translateY(-4px)' : 'none',
-        cursor: href ? 'pointer' : 'default', textDecoration: 'none',
+        cursor: (href || showReadMore) ? 'pointer' : 'default', textDecoration: 'none',
       }}>
       <div style={{
         height: 186, background: `linear-gradient(135deg, ${C.navy} 0%, #1a3568 100%)`,
@@ -288,7 +289,7 @@ export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, ima
           fontWeight: 700, fontSize: 20, margin: '0 0 8px', letterSpacing: 0.2, lineHeight: 1.2,
         }}>{title}</h3>
         {excerpt && <p style={{ color: C.muted, fontSize: 13.5, margin: '0 0 14px', lineHeight: 1.65 }}>{excerpt}</p>}
-        {href && (
+        {(href || showReadMore) && (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <span style={{ color: C.red, fontSize: 13, fontWeight: 700, fontFamily: "'Barlow',sans-serif" }}>
               Lire la suite →
