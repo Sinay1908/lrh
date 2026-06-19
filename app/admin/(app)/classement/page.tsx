@@ -25,7 +25,7 @@ export default function ClassementPage() {
   const [saveError, setSaveError]           = useState<string | null>(null)
   const [filterSaison, setFilterSaison]     = useState(CURRENT_SAISON)
   const [filterComp, setFilterComp]         = useState('')
-  const [showNewSaison, setShowNewSaison]   = useState(false)
+  const [modalSaison, setModalSaison]       = useState(false)
   const [newSaisonInput, setNewSaisonInput] = useState('')
 
   const load = useCallback(async () => {
@@ -89,10 +89,10 @@ export default function ClassementPage() {
   }
 
   const handleAddSaison = () => {
-    const y = newSaisonInput.trim()
+    const y = newSaisonInput.trim().replace(/\s/g, '')
     if (!y) return
     switchSaison(y)
-    setShowNewSaison(false)
+    setModalSaison(false)
     setNewSaisonInput('')
   }
 
@@ -155,32 +155,10 @@ export default function ClassementPage() {
             )}
           </div>
         ))}
-        {showNewSaison ? (
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <input
-              value={newSaisonInput}
-              onChange={e => setNewSaisonInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleAddSaison()}
-              placeholder="ex. 2026/2027"
-              maxLength={9}
-              style={{ width: 76, padding: '6px 10px', border: `1px solid ${A.border}`, borderRadius: A.r6, fontSize: 14, fontFamily: "'Barlow',sans-serif", outline: 'none' }}
-              autoFocus
-            />
-            <button onClick={handleAddSaison}
-              style={{ background: A.navy, color: '#fff', border: 'none', padding: '6px 12px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
-              OK
-            </button>
-            <button onClick={() => { setShowNewSaison(false); setNewSaisonInput('') }}
-              style={{ background: 'transparent', color: A.muted, border: `1px solid ${A.border}`, padding: '6px 10px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13 }}>
-              ×
-            </button>
-          </div>
-        ) : (
-          <button onClick={() => setShowNewSaison(true)}
-            style={{ background: 'transparent', color: A.textSec, border: `1px dashed ${A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 5 }}>
-            + Nouvelle saison
-          </button>
-        )}
+        <button onClick={() => { setNewSaisonInput(''); setModalSaison(true) }}
+          style={{ background: 'transparent', color: A.textSec, border: `1px dashed ${A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
+          + Nouvelle saison
+        </button>
       </div>
 
       {/* ── Onglets compétitions (dans la saison active) ── */}
@@ -256,6 +234,21 @@ export default function ClassementPage() {
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6 }}>
           <ABtn variant="ghost" onClick={() => setModal(false)}>Annuler</ABtn>
           <ABtn variant="navy" onClick={handleSave} disabled={saving}>{saving ? 'Enregistrement…' : 'Enregistrer'}</ABtn>
+        </div>
+      </Modal>
+      <Modal open={modalSaison} onClose={() => setModalSaison(false)} title="Nouvelle saison" width={360}>
+        <p style={{ fontSize: 13.5, color: A.textSec, margin: '0 0 16px' }}>
+          Entrez le nom de la saison, par exemple <strong>2026/2027</strong>.
+        </p>
+        <AInput
+          label="Saison"
+          value={newSaisonInput}
+          onChange={e => setNewSaisonInput(e.target.value)}
+          placeholder="ex. 2026/2027"
+        />
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 16 }}>
+          <ABtn variant="ghost" onClick={() => setModalSaison(false)}>Annuler</ABtn>
+          <ABtn variant="navy" onClick={handleAddSaison} disabled={!newSaisonInput.trim()}>Créer la saison</ABtn>
         </div>
       </Modal>
     </div>
