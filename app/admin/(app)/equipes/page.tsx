@@ -105,6 +105,7 @@ export default function EquipesPage() {
               {value:'U13',label:'U13'}, {value:'U15',label:'U15'}, {value:'U17',label:'U17'}, {value:'U20',label:'U20'},
               {value:'Régional',     label:'Régional'},
               {value:'Pré-national', label:'Pré-national'},
+              {value:'National 4',   label:'National 4'},
               {value:'National 3',   label:'National 3'},
               {value:'National 2',   label:'National 2'},
               {value:'National 1',   label:'National 1'},

@@ -6,8 +6,13 @@ import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeade
 interface Ligne  { id: number; competition: string; saison: string; position: number; equipe: string; joues: number; gagnes: number; nuls: number; perdus: number; bpour: number; bcontre: number; points: number; isLyon: boolean }
 interface Equipe { id: number; nom: string; actif: boolean }
 
-const CURRENT_YEAR = String(new Date().getFullYear())
-const INIT = { competition: '', saison: CURRENT_YEAR, position: '1', equipe: '', joues: '0', gagnes: '0', nuls: '0', perdus: '0', bpour: '0', bcontre: '0', points: '0', isLyon: false }
+function getCurrentSaison() {
+  const now = new Date()
+  const y = now.getFullYear()
+  return now.getMonth() + 1 >= 9 ? `${y}/${y + 1}` : `${y - 1}/${y}`
+}
+const CURRENT_SAISON = getCurrentSaison()
+const INIT = { competition: '', saison: CURRENT_SAISON, position: '1', equipe: '', joues: '0', gagnes: '0', nuls: '0', perdus: '0', bpour: '0', bcontre: '0', points: '0', isLyon: false }
 
 export default function ClassementPage() {
   const [items, setItems]                   = useState<Ligne[]>([])
@@ -17,7 +22,7 @@ export default function ClassementPage() {
   const [editing, setEditing]               = useState<Ligne | null>(null)
   const [form, setForm]                     = useState(INIT)
   const [saving, setSaving]                 = useState(false)
-  const [filterSaison, setFilterSaison]     = useState(CURRENT_YEAR)
+  const [filterSaison, setFilterSaison]     = useState(CURRENT_SAISON)
   const [filterComp, setFilterComp]         = useState('')
   const [showNewSaison, setShowNewSaison]   = useState(false)
   const [newSaisonInput, setNewSaisonInput] = useState('')
@@ -35,9 +40,9 @@ export default function ClassementPage() {
 
   useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Saisons triées desc + toujours inclure l'année courante
+  // Saisons triées desc + toujours inclure la saison courante
   const saisonsInDB = [...new Set(items.map(i => i.saison))].sort((a, b) => b.localeCompare(a))
-  const saisons = saisonsInDB.includes(CURRENT_YEAR) ? saisonsInDB : [CURRENT_YEAR, ...saisonsInDB]
+  const saisons = saisonsInDB.includes(CURRENT_SAISON) ? saisonsInDB : [CURRENT_SAISON, ...saisonsInDB]
 
   const activeSaison     = saisons.includes(filterSaison) ? filterSaison : saisons[0]
   const itemsForSaison   = items.filter(i => i.saison === activeSaison)
@@ -77,10 +82,18 @@ export default function ClassementPage() {
 
   const handleAddSaison = () => {
     const y = newSaisonInput.trim()
-    if (!y || !/^\d{4}$/.test(y)) return
+    if (!y) return
     switchSaison(y)
     setShowNewSaison(false)
     setNewSaisonInput('')
+  }
+
+  const handleDeleteSaison = async (saison: string) => {
+    const lignes = items.filter(i => i.saison === saison)
+    if (!confirm(`Supprimer la saison "${saison}" et ses ${lignes.length} ligne${lignes.length !== 1 ? 's' : ''} ?`)) return
+    await Promise.all(lignes.map(l => fetch(`/api/classement/${l.id}`, { method: 'DELETE' })))
+    await load()
+    if (filterSaison === saison) switchSaison(saisons.find(s => s !== saison) ?? CURRENT_SAISON)
   }
 
   const cols: Col[] = [
@@ -119,10 +132,20 @@ export default function ClassementPage() {
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
         <span style={{ fontSize: 12, fontWeight: 600, color: A.muted, letterSpacing: 1, textTransform: 'uppercase', marginRight: 4 }}>Saison</span>
         {saisons.map(s => (
-          <button key={s} onClick={() => switchSaison(s)}
-            style={{ background: activeSaison === s ? A.navy : A.bg, color: activeSaison === s ? '#fff' : A.textSec, border: `1px solid ${activeSaison === s ? A.navy : A.border}`, padding: '6px 14px', borderRadius: A.r6, cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, transition: 'all 0.15s' }}>
-            {s}
-          </button>
+          <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            <button onClick={() => switchSaison(s)}
+              style={{ background: activeSaison === s ? A.navy : A.bg, color: activeSaison === s ? '#fff' : A.textSec, border: `1px solid ${activeSaison === s ? A.navy : A.border}`, padding: '6px 14px', borderRadius: `${A.r6} 0 0 ${A.r6}`, cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15, transition: 'all 0.15s', borderRight: 'none' }}>
+              {s}
+            </button>
+            {items.some(i => i.saison === s) && (
+              <button onClick={() => handleDeleteSaison(s)} title={`Supprimer la saison ${s}`}
+                style={{ background: activeSaison === s ? A.navy : A.bg, color: activeSaison === s ? 'rgba(255,255,255,0.6)' : A.muted, border: `1px solid ${activeSaison === s ? A.navy : A.border}`, padding: '6px 8px', borderRadius: `0 ${A.r6} ${A.r6} 0`, cursor: 'pointer', fontSize: 13, lineHeight: 1, transition: 'all 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = activeSaison === s ? '#fff' : '#DC2626')}
+                onMouseLeave={e => (e.currentTarget.style.color = activeSaison === s ? 'rgba(255,255,255,0.6)' : A.muted)}>
+                ×
+              </button>
+            )}
+          </div>
         ))}
         {showNewSaison ? (
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -130,8 +153,8 @@ export default function ClassementPage() {
               value={newSaisonInput}
               onChange={e => setNewSaisonInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleAddSaison()}
-              placeholder="ex. 2027"
-              maxLength={4}
+              placeholder="ex. 2026/2027"
+              maxLength={9}
               style={{ width: 76, padding: '6px 10px', border: `1px solid ${A.border}`, borderRadius: A.r6, fontSize: 14, fontFamily: "'Barlow',sans-serif", outline: 'none' }}
               autoFocus
             />
