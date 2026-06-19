@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { C, R, SH, SECTION_PAD, MAX_W, Badge, Btn, SectionHeader, CTABanner, MatchCard, ContentCard } from '@/components/public/ui'
 
 interface DbMatch { id: number; adversaire: string; competition: string; domicile: boolean; lieu: string | null; date: string; heure: string | null; statut: string; scoreDom: number | null; scoreExt: number | null }
-interface DbArticle { id: number; titre: string; categorie: string | null; extrait: string | null; imageUrl: string | null; publishedAt: string | null; createdAt: string }
+interface DbArticle { id: number; titre: string; slug: string; categorie: string | null; extrait: string | null; contenu: string; imageUrl: string | null; publishedAt: string | null; createdAt: string }
 interface DbEquipe { id: number; nom: string; categorie: string; couleur: string }
 
 export interface DbSponsor { id: number; nom: string; logoUrl: string | null; siteUrl: string | null; niveau: string; ordre: number }
@@ -136,7 +136,7 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
               {articles.map(a => {
                 const dateStr = a.publishedAt || a.createdAt
                 const meta = new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
-                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || ''} imageUrl={a.imageUrl} />
+                return <ContentCard key={a.id} badge={a.categorie || 'Actualité'} title={a.titre} meta={meta} excerpt={a.extrait || a.contenu.substring(0, 160) + '…'} imageUrl={a.imageUrl} href={'/actualites/' + a.slug} />
               })}
             </div>
           )}

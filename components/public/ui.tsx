@@ -287,7 +287,14 @@ export function ContentCard({ badge, badgeColor, title, excerpt, meta, href, ima
           color: C.navy, fontFamily: "'Barlow Condensed',sans-serif",
           fontWeight: 700, fontSize: 20, margin: '0 0 8px', letterSpacing: 0.2, lineHeight: 1.2,
         }}>{title}</h3>
-        {excerpt && <p style={{ color: C.muted, fontSize: 13.5, margin: 0, lineHeight: 1.65 }}>{excerpt}</p>}
+        {excerpt && <p style={{ color: C.muted, fontSize: 13.5, margin: '0 0 14px', lineHeight: 1.65 }}>{excerpt}</p>}
+        {href && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <span style={{ color: C.red, fontSize: 13, fontWeight: 700, fontFamily: "'Barlow',sans-serif" }}>
+              Lire la suite →
+            </span>
+          </div>
+        )}
       </div>
     </Tag>
   )
