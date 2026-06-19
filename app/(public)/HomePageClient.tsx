@@ -172,17 +172,17 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
         <div style={{ background: '#fff', padding: SECTION_PAD }} className="rsp-section">
           <div style={{ ...MAX_W }}>
             <SectionHeader label="Ils nous soutiennent" title="Nos Partenaires" center />
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 40, marginTop: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '32px 48px', alignItems: 'center', marginTop: 8 }}>
               {sponsors.map(s => (
                 <a key={s.id}
                   href={s.siteUrl || undefined}
                   target={s.siteUrl ? '_blank' : undefined}
                   rel="noopener noreferrer"
-                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' }}>
+                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {s.logoUrl ? (
-                    <div style={{ width: 160, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                    <div style={{ width: '100%', height: 72, position: 'relative' }}>
                       <img src={s.logoUrl} alt={s.nom}
-                        style={{ display: 'block', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain', filter: 'grayscale(30%)', transition: 'filter 0.2s', opacity: 0.85 }}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', filter: 'grayscale(30%)', transition: 'filter 0.2s, opacity 0.2s', opacity: 0.85 }}
                         onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(0%)'; (e.currentTarget as HTMLImageElement).style.opacity = '1' }}
                         onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'grayscale(30%)'; (e.currentTarget as HTMLImageElement).style.opacity = '0.85' }}
                       />
@@ -192,7 +192,7 @@ export default function HomePageClient({ hero, heroStats, sponsors }: { hero: He
                       padding: '12px 24px', borderRadius: R.card,
                       border: `1.5px solid ${C.border}`, color: C.navy,
                       fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: 15,
-                      letterSpacing: 0.5, whiteSpace: 'nowrap',
+                      letterSpacing: 0.5, whiteSpace: 'nowrap', textAlign: 'center', width: '100%',
                     }}>{s.nom}</div>
                   )}
                 </a>
