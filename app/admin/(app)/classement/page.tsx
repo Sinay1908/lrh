@@ -40,11 +40,11 @@ export default function ClassementPage() {
 
   useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Saisons triées desc + toujours inclure la saison courante
+  // Saisons triées desc + toujours inclure la saison courante et celle sélectionnée
   const saisonsInDB = [...new Set(items.map(i => i.saison))].sort((a, b) => b.localeCompare(a))
-  const saisons = saisonsInDB.includes(CURRENT_SAISON) ? saisonsInDB : [CURRENT_SAISON, ...saisonsInDB]
+  const saisons = [...new Set([filterSaison, CURRENT_SAISON, ...saisonsInDB])].sort((a, b) => b.localeCompare(a))
 
-  const activeSaison     = saisons.includes(filterSaison) ? filterSaison : saisons[0]
+  const activeSaison     = filterSaison
   const itemsForSaison   = items.filter(i => i.saison === activeSaison)
   const competitions     = [...new Set(itemsForSaison.map(i => i.competition))]
   const activeComp       = competitions.includes(filterComp) ? filterComp : (competitions[0] ?? '')
