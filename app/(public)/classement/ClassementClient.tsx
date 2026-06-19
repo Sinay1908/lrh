@@ -43,7 +43,11 @@ export default function ClassementClient({ badge }: { badge: string }) {
     fetch('/api/classement').then(r => r.json()).then(d => setLignes(Array.isArray(d) ? d : [])).catch(()=>{}).finally(() => setLoading(false))
   }, [])
 
-  const competitions = [...new Set(lignes.map(l => l.competition))]
+  // N'afficher que la saison la plus récente
+  const saisons = [...new Set(lignes.map(l => l.saison))].sort((a, b) => b.localeCompare(a))
+  const lastSaison = saisons[0] ?? ''
+  const lignesSaison = lignes.filter(l => l.saison === lastSaison)
+  const competitions = [...new Set(lignesSaison.map(l => l.competition))]
 
   return (
     <div>
@@ -60,7 +64,7 @@ export default function ClassementClient({ badge }: { badge: string }) {
             </div>
           ) : (
             competitions.map(c => (
-              <ClassementTable key={c} competition={c} lignes={lignes.filter(l => l.competition === c)} />
+              <ClassementTable key={c} competition={c} lignes={lignesSaison.filter(l => l.competition === c)} />
             ))
           )}
         </div>
