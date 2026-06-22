@@ -184,10 +184,11 @@ model ClassementLigne {
 model ProduitBoutique {
   id          Int      @id @default(autoincrement())
   nom         String
-  categorie   String   // "Maillot", "Équipement", "Accessoire"
+  categorie   String   // "Maillot", "Pantalon"
   prix        Float
   description String?  @db.Text
   badge       String?
+  lienSumup   String?
   disponible  Boolean  @default(true)
   ordre       Int      @default(0)
   createdAt   DateTime @default(now())

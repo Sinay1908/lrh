@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { A, ABtn, ACard, AInput, ASelect, ATable, Col, IconBtn, Modal, PageHeader } from '@/components/admin/ui'
 
-interface Produit { id: number; nom: string; categorie: string; prix: number; description: string | null; badge: string | null; disponible: boolean; ordre: number }
+interface Produit { id: number; nom: string; categorie: string; prix: number; description: string | null; badge: string | null; lienSumup: string | null; disponible: boolean; ordre: number }
 
-const INIT = { nom: '', categorie: 'Maillot', prix: '', description: '', badge: '', disponible: true, ordre: '0' }
+const INIT = { nom: '', categorie: 'Maillot', prix: '', description: '', badge: '', lienSumup: '', disponible: true, ordre: '0' }
 
 export default function BoutiquePage() {
   const [items, setItems]     = useState<Produit[]>([])
@@ -22,12 +22,16 @@ export default function BoutiquePage() {
   useEffect(() => { load() }, [load])
 
   const openCreate = () => { setEditing(null); setForm(INIT); setModal(true) }
-  const openEdit   = (p: Produit) => { setEditing(p); setForm({ nom: p.nom, categorie: p.categorie, prix: String(p.prix), description: p.description || '', badge: p.badge || '', disponible: p.disponible, ordre: String(p.ordre) }); setModal(true) }
+  const openEdit   = (p: Produit) => {
+    setEditing(p)
+    setForm({ nom: p.nom, categorie: p.categorie, prix: String(p.prix), description: p.description || '', badge: p.badge || '', lienSumup: p.lienSumup || '', disponible: p.disponible, ordre: String(p.ordre) })
+    setModal(true)
+  }
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      const body = { ...form, prix: Number(form.prix), ordre: Number(form.ordre) }
+      const body = { ...form, prix: Number(form.prix), ordre: Number(form.ordre), lienSumup: form.lienSumup || null }
       if (editing) await fetch(`/api/boutique/${editing.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       else await fetch('/api/boutique', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       await load(); setModal(false)
@@ -50,7 +54,12 @@ export default function BoutiquePage() {
       <span style={{ background: A.bg, color: A.textSec, padding: '3px 9px', borderRadius: 99, fontSize: 12 }}>{p.categorie as string}</span>
     )},
     { label: 'Prix', key: 'prix', right: true, render: p => <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 16, color: A.navy }}>{(p.prix as number).toFixed(2)} €</span> },
-    { label: 'Disponibilité', key: 'disponible', render: p => <span style={{ background: p.disponible ? '#ECFDF5' : '#FFF1F2', color: p.disponible ? '#065F46' : '#BE123C', padding: '2px 8px', borderRadius: 99, fontSize: 12, fontWeight: 600 }}>{p.disponible ? 'Disponible' : 'Indisponible'}</span> },
+    { label: 'SumUp', key: 'lienSumup', render: p => (
+      <span style={{ fontSize: 12, color: p.lienSumup ? '#065F46' : A.muted, background: p.lienSumup ? '#ECFDF5' : A.bg, padding: '2px 8px', borderRadius: 99, fontWeight: 600 }}>
+        {p.lienSumup ? '✓ Configuré' : '— Non configuré'}
+      </span>
+    )},
+    { label: 'Dispo', key: 'disponible', render: p => <span style={{ background: p.disponible ? '#ECFDF5' : '#FFF1F2', color: p.disponible ? '#065F46' : '#BE123C', padding: '2px 8px', borderRadius: 99, fontSize: 12, fontWeight: 600 }}>{p.disponible ? 'Oui' : 'Non'}</span> },
     { label: '', key: 'actions', right: true, render: p => (
       <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
         <IconBtn icon="edit"  title="Modifier"  onClick={() => openEdit(p as unknown as Produit)} color={A.blue} />
@@ -67,16 +76,18 @@ export default function BoutiquePage() {
         {loading ? <div style={{ textAlign: 'center', padding: 48, color: A.muted }}>Chargement…</div>
           : <ATable cols={cols} rows={items as unknown as Record<string, unknown>[]} />}
       </ACard>
+
       <Modal open={modal} onClose={() => setModal(false)} title={editing ? 'Modifier le produit' : 'Nouveau produit'}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
-          <AInput label="Nom du produit" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Maillot domicile 2024-25" />
+          <AInput label="Nom du produit" value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} required placeholder="ex. Maillot domicile 2025-26" />
           <AInput label="Prix (€)" type="number" value={form.prix} onChange={e => setForm({ ...form, prix: e.target.value })} required placeholder="ex. 65" />
         </div>
         <div className="rsp-form-2col">
           <ASelect label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}
-            options={['Maillot','Équipement','Accessoire','Textile','Protection'].map(v=>({value:v,label:v}))} />
+            options={['Maillot', 'Pantalon'].map(v => ({ value: v, label: v }))} />
           <AInput label="Badge (optionnel)" value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="ex. Nouveau, Promo…" />
         </div>
+        <AInput label="Lien SumUp" value={form.lienSumup} onChange={e => setForm({ ...form, lienSumup: e.target.value })} placeholder="https://pay.sumup.com/b2c/QXXX…" />
         <AInput label="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} placeholder="Description du produit…" />
         <div className="rsp-form-2col">
           <AInput label="Ordre" type="number" value={form.ordre} onChange={e => setForm({ ...form, ordre: e.target.value })} />

@@ -13,10 +13,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { nom, categorie, prix, description, badge, disponible, ordre } = body
+    const { nom, categorie, prix, description, badge, lienSumup, disponible, ordre } = body
     if (!nom || !categorie || prix === undefined) return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
     const produit = await prisma.produitBoutique.create({
-      data: { nom, categorie, prix: Number(prix), description, badge, disponible: disponible ?? true, ordre: ordre || 0 },
+      data: { nom, categorie, prix: Number(prix), description, badge, lienSumup: lienSumup || null, disponible: disponible ?? true, ordre: ordre || 0 },
     })
     return NextResponse.json(produit, { status: 201 })
   } catch {
