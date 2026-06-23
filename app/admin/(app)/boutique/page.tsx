@@ -103,7 +103,7 @@ export default function BoutiquePage() {
       <span style={{ background: A.bg, color: A.textSec, padding: '3px 9px', borderRadius: 99, fontSize: 12 }}>{p.categorie as string}</span>
     )},
     { label: 'Prix', key: 'prix', right: true, render: p => <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 16, color: A.navy }}>{(p.prix as number).toFixed(2)} €</span> },
-    { label: 'Tailles', key: 'tailles', render: p => <span style={{ color: p.tailles ? A.text : A.muted, fontSize: 12 }}>{p.tailles ? (p.tailles as string) : '—'}</span> },
+    { label: 'Tailles', key: 'tailles', render: p => <span style={{ color: p.tailles ? A.navy : A.muted, fontSize: 12 }}>{p.tailles ? (p.tailles as string) : '—'}</span> },
     { label: 'SumUp', key: 'lienSumup', render: p => (
       <span style={{ fontSize: 12, color: p.lienSumup ? '#065F46' : A.muted, background: p.lienSumup ? '#ECFDF5' : A.bg, padding: '2px 8px', borderRadius: 99, fontWeight: 600 }}>
         {p.lienSumup ? '✓ Configuré' : '—'}
