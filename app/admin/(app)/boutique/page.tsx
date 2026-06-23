@@ -134,7 +134,7 @@ export default function BoutiquePage() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <ASelect label="Catégorie" value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })}
-            options={['Maillot', 'Pantalon'].map(v => ({ value: v, label: v }))} />
+            options={['Maillot', 'Short', 'Pantalon', 'T-Shirt', 'Sweat', 'Veste', 'Accessoire', 'Sac', 'Équipement', 'Autre'].map(v => ({ value: v, label: v }))} />
           <AInput label="Badge (optionnel)" value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="ex. Nouveau, Promo…" />
         </div>
         <ImageUpload value={form.imageUrl} onChange={url => setForm({ ...form, imageUrl: url })} />
