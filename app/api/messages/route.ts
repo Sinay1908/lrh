@@ -12,15 +12,30 @@ export async function POST(request: Request) {
       data: { nom, email, sujet, corps: message },
     })
 
-    if (process.env.FORMSPREE_ID) {
+    if (process.env.RESEND_API_KEY) {
       try {
-        await fetch(`https://formspree.io/f/${process.env.FORMSPREE_ID}`, {
+        await fetch('https://api.resend.com/emails', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ name: nom, _replyto: email, email, subject: sujet, message }),
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+          body: JSON.stringify({
+            from: 'Lyon Roller Hockey <contact@lyonrollerhockey.fr>',
+            to:   ['contact@lyonrollerhockey.fr'],
+            reply_to: email,
+            subject:  `[Contact] ${sujet}`,
+            html: `<div style="font-family:Arial,sans-serif;max-width:600px">
+              <div style="background:#0D2150;padding:20px 28px"><h2 style="color:#fff;margin:0">Nouveau message — Lyon Roller Hockey</h2></div>
+              <div style="padding:28px;background:#f9f9f9">
+                <p><strong>Nom :</strong> ${nom}</p>
+                <p><strong>Email :</strong> <a href="mailto:${email}">${email}</a></p>
+                <p><strong>Sujet :</strong> ${sujet}</p>
+                <hr style="margin:20px 0;border:none;border-top:1px solid #ddd"/>
+                <p style="white-space:pre-wrap">${message}</p>
+              </div>
+            </div>`,
+          }),
         })
       } catch (err) {
-        console.error('Formspree error:', err)
+        console.error('Resend error:', err)
       }
     }
 
